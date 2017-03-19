@@ -1,0 +1,41 @@
+% - All IP addresses except local host
+::1 - IPV6 address for localhost
+grep port /etc/mysql/my.cnf
+-----------------------------------------
+-> Basics
+
+show databases;
+use test_db;
+show tables;
+select database();
+------------------------------------------
+-> Services
+
+sudo service mysql status
+sudo service mysql stop
+sudo service mysql start
+sudo service apache2 status
+-------------------------------------------
+-> List all the users and respective hosts
+
+SELECT user, host
+FROM mysql.user;
+-------------------------------------------
+-> List permissions of some user
+
+SHOW GRANTS FOR 'root'@'localhost';
+-------------------------------------------
+-> Delete Users
+
+DROP user 'test_user'@'%';
+-------------------------------------------
+-> create users
+
+CREATE user 'test_user'@'%'
+IDENTIFIED BY 'Test_user9977';
+-------------------------------------------
+-> Manage privilages
+
+GRANT ALL PRIVILEGES ON *.* TO 'test_user'@'%'
+WITH GRANT OPTION;
+-------------------------------------------
