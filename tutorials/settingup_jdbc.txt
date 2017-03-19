@@ -1,0 +1,5 @@
+-> Download .tar.gz file from https://mvnrepository.com/artifact/mysql/mysql-connector-java/5.1.29
+(Latest versions not working - issue with old package tools on Android SDK)
+-> copy .jar folder to AndroidStudioProjects/<appName>/app/libs
+-> chmod 777 .jar file
+-> add ----> compile files('libs/<.jar>') in build.gradle
