@@ -8,12 +8,23 @@ Troubleshootings
 ----------------
 nano /etc/mysql/my.cnf
 make bind-address = your-ip
-stackoverflow.com/questions/6865538/solving-a-communications-link-failure-with-$
+Link -> stackoverflow.com/questions/6865538/solving-a-communications-link-failure-with-$
 
 -----------
 
 echo "ServerName localhost" | sudo tee /etc/apache2/conf-available/fqdn.conf
 sudo a2enconf fqdn
-http://askubuntu.com/questions/256013/apache-error-could-not-reliably-determine$
+Link -> http://askubuntu.com/questions/256013/apache-error-could-not-reliably-determine$
 
 ------------
+
+mysql_upgrade -u root -p --force
+sudo service mysql restart
+Link -> http://stackoverflow.com/questions/36746677/table-performance-schema-session-variables-doesnt-exist
+
+------------
+
+If you have any issue with plugin then remove and re-create the user
+Make sure that user has enough previliges
+
+-------------

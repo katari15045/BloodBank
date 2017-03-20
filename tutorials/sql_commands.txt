@@ -39,4 +39,7 @@ IDENTIFIED BY 'Test_user9977';
 GRANT ALL PRIVILEGES ON *.* TO 'test_user'@'%'
 WITH GRANT OPTION;
 -------------------------------------------
+-> Delete a row in a table
 
+Delete from countries where cid=9;
+--------------------------------------------
