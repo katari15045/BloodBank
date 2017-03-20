@@ -3,3 +3,17 @@
 -> copy .jar folder to AndroidStudioProjects/<appName>/app/libs
 -> chmod 777 .jar file
 -> add ----> compile files('libs/<.jar>') in build.gradle
+
+Troubleshootings
+----------------
+nano /etc/mysql/my.cnf
+make bind-address = your-ip
+stackoverflow.com/questions/6865538/solving-a-communications-link-failure-with-$
+
+-----------
+
+echo "ServerName localhost" | sudo tee /etc/apache2/conf-available/fqdn.conf
+sudo a2enconf fqdn
+http://askubuntu.com/questions/256013/apache-error-could-not-reliably-determine$
+
+------------

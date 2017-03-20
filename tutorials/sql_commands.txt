@@ -39,3 +39,4 @@ IDENTIFIED BY 'Test_user9977';
 GRANT ALL PRIVILEGES ON *.* TO 'test_user'@'%'
 WITH GRANT OPTION;
 -------------------------------------------
+
