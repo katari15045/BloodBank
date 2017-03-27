@@ -131,26 +131,27 @@ public class MainActivity extends AppCompatActivity
                 {
                     count = 1;
 
+
                     while( count <= cols )
                     {
                         type = resultSetMetaData.getColumnTypeName(count);
 
-                        if( type.equalsIgnoreCase("int") )
+                        if( type.equalsIgnoreCase("int") || type.equalsIgnoreCase("bigint") )
                         {
                             result.append( Integer.toString( resultSet.getInt(count) ) );
                         }
 
-                        else if( type.equalsIgnoreCase("float") )
+                        else if( type.equalsIgnoreCase("float") || type.equalsIgnoreCase("real") )
                         {
                             result.append( Float.toString( resultSet.getFloat(count) ) );
                         }
 
-                        else if( type.equalsIgnoreCase("varchar") || type.equals("char") )
+                        else if( type.equals("VARCHAR") )
                         {
                             result.append( resultSet.getString(count) );
                         }
 
-                        else if( type.equalsIgnoreCase("binary") )
+                        else if( type.equalsIgnoreCase("TINYINT") ) // BOOLEAN
                         {
                             result.append( resultSet.getBoolean(count) );
                         }
@@ -178,7 +179,7 @@ public class MainActivity extends AppCompatActivity
         protected void onPostExecute(String parameter)
         {
             progressDialog.dismiss();
-            Toast.makeText(MainActivity.this, "Command sent!!!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "Command Sent!!!", Toast.LENGTH_SHORT).show();
             textViewResult.setText(result);
         }
     }

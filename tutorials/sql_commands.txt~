@@ -46,10 +46,6 @@ note : If a user has grant option then he/she can create/delete some priviliges 
 - There is a security risk if you give grant option to a public account
 Link -> http://stackoverflow.com/questions/5016505/mysql-grant-all-privileges-on-database/15707789#15707789
 -------------------------------------------
--> Allow a user to create a database
-
-grant create on *.* to 'test_user'@'%';
--------------------------------------------
 -> Delete a row in a table
 
 Delete from countries where cid=9;
