@@ -187,6 +187,7 @@ public class Login extends AppCompatActivity
             if( countPasswords == 1 )
             {
                 Intent intent = new Intent( Login.this, Home.class );
+                intent.putExtra("labelUsername", username);
                 startActivity(intent);
             }
         }
