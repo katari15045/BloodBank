@@ -1,52 +1,52 @@
 package com.example.root.home;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.widget.Toast;
+
+/**
+ * Created by root on 29/3/17.
+ */
 
 public class Home extends AppCompatActivity
 {
-    private Button buttonSignup;
-    private Button buttonSignin;
-
     @Override
-    protected void onCreate(Bundle savedInstanceState)
+    protected void onCreate(@Nullable Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        initializeViews();
-
-        buttonSignup.setOnClickListener(new View.OnClickListener()
-        {
-            private Intent intentSignup;
-
-            @Override
-            public void onClick(View v)
-            {
-                intentSignup = new Intent( Home.this, Signup.class );
-                startActivity(intentSignup);
-            }
-        });
-
-        buttonSignin.setOnClickListener(new View.OnClickListener()
-        {
-            private Intent intentSignin;
-
-            @Override
-            public void onClick(View v)
-            {
-                intentSignin = new Intent( Home.this, Login.class );
-                startActivity(intentSignin);
-            }
-        });
     }
 
-    private void initializeViews()
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
     {
-        buttonSignup = (Button) findViewById(R.id.buttonSignup);
-        buttonSignin = (Button) findViewById(R.id.buttonSignin);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_overflow, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch ( item.getItemId() )
+        {
+            case R.id.itemProfile:
+                handleProfileItem();
+                return  true;
+        }
+
+        return true;
+    }
+
+    private void handleProfileItem()
+    {
+        Intent intent = new Intent( Home.this, Profile.class );
+        startActivity(intent);
     }
 }

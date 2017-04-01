@@ -5,6 +5,7 @@ package com.example.root.home;
  */
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -182,6 +183,12 @@ public class Login extends AppCompatActivity
             }
 
             Toast.makeText(Login.this, toastMessage, Toast.LENGTH_SHORT).show();
+
+            if( countPasswords == 1 )
+            {
+                Intent intent = new Intent( Login.this, Home.class );
+                startActivity(intent);
+            }
         }
     }
 }

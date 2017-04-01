@@ -62,6 +62,8 @@ public class Signup extends AppCompatActivity
     private String commandCreateUserTable;
     private String commandInsertIntoUser;
     private String commandCountUsername;
+    private String commandCountMobileNumber;
+    private  String commandCountEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -207,6 +209,14 @@ public class Signup extends AppCompatActivity
             stringBuilder.setLength(0);
             stringBuilder.append("select count(*) from user where username='").append(username).append("';");
             commandCountUsername = stringBuilder.toString();
+
+            stringBuilder.setLength(0);
+            stringBuilder.append("select count(*) from user where mobileNumber='").append(mobileNumber).append("';");
+            commandCountMobileNumber = stringBuilder.toString();
+
+            stringBuilder.setLength(0);
+            stringBuilder.append("select count(*) from user where email='").append(email).append("';");
+            commandCountEmail = stringBuilder.toString();
         }
 
         private void initializeMYSQLParametres()
@@ -230,8 +240,13 @@ public class Signup extends AppCompatActivity
         private Statement statement;
         private ResultSet resultSet;
         private ResultSetMetaData resultSetMetaData;
+
         int countUserNames;
+        int countMobiles;
+        int countEmails;
         int statusMultipleUserNames;
+        int statusMultipleMobiles;
+        int statusMultipleEmails;
 
         @Override
         protected String doInBackground(String... parameters)
@@ -243,16 +258,42 @@ public class Signup extends AppCompatActivity
                 connection = DriverManager.getConnection(url, userNameMYSQL, passwordMYSQL);
                 statement = connection.createStatement();
                 statement.executeUpdate(commandCreateUserTable);
+
                 resultSet = statement.executeQuery(commandCountUsername);
                 resultSetMetaData = resultSet.getMetaData();
                 resultSet.next();
                 countUserNames = resultSet.getInt(1);
+
+                resultSet = statement.executeQuery(commandCountMobileNumber);
+                resultSetMetaData = resultSet.getMetaData();
+                resultSet.next();
+                countMobiles = resultSet.getInt(1);
+
+                resultSet = statement.executeQuery(commandCountEmail);
+                resultSetMetaData = resultSet.getMetaData();
+                resultSet.next();
+                countEmails = resultSet.getInt(1);
+
                 statusMultipleUserNames = 0;
+                statusMultipleMobiles = 0;
+                statusMultipleEmails = 0;
 
                 if( countUserNames == 1 )
                 {
                     statusMultipleUserNames = 1;
                     return null;
+                }
+
+                else if( countMobiles == 1 )
+                {
+                    statusMultipleMobiles = 1;
+                    return  null;
+                }
+
+                else if( countEmails == 1 )
+                {
+                    statusMultipleEmails = 1;
+                    return  null;
                 }
 
                 statement.executeUpdate(commandInsertIntoUser);
@@ -282,6 +323,16 @@ public class Signup extends AppCompatActivity
             if( statusMultipleUserNames == 1 )
             {
                 toastMessage = "Username Already Exists!!!";
+            }
+
+            else if( statusMultipleMobiles == 1 )
+            {
+                toastMessage = "Mobile number already registered!!!";
+            }
+
+            else if( statusMultipleEmails == 1 )
+            {
+                toastMessage = "Email already registered!!!";
             }
 
             Toast.makeText(Signup.this, toastMessage, Toast.LENGTH_SHORT).show();
