@@ -106,5 +106,6 @@ public class Profile extends AppCompatActivity
         imageEditName.setOnClickListener( new ProfileNameUpdator(Profile.this) );
         imageEditUsername.setOnClickListener( new ProfileUsernameUpdator(Profile.this) );
         imageEditPassword.setOnClickListener( new ProfilePasswordUpdator(Profile.this) );
+        imageEditMobile.setOnClickListener( new ProfileMobileUpdator(Profile.this) );
     }
 }
