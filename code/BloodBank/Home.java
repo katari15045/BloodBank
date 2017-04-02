@@ -8,15 +8,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 /**
  * Created by root on 29/3/17.
@@ -53,34 +49,15 @@ public class Home extends AppCompatActivity
         textViewUserInfo = (TextView) findViewById(R.id.textViewUserInfo);
 
         getUserInfo();
-        displayUserInfo();
     }
 
     private void getUserInfo()
     {
-        database = new DataBase(Home.this,progressDialog, textViewUserInfo);
+        database = new DataBase(Home.this);
         prepareCommands();
         database.executeQuery( command, false );
         resultSet = database.getResultSet();
         parseResultSet();
-        displayUserInfo();
-    }
-
-    private void displayUserInfo()
-    {
-        String displayString;
-        StringBuilder stringBuilder = new StringBuilder();
-
-        stringBuilder.append("Name -> ").append(name).append("\n");
-        stringBuilder.append("Username -> ").append(username).append("\n");
-        stringBuilder.append("Mobile -> ").append(mobileNumber).append("\n");
-        stringBuilder.append("Email -> ").append(emailId).append("\n");
-        stringBuilder.append("Country -> ").append(country).append("\n");
-        stringBuilder.append("isDonor -> ").append(isDonor).append("\n");
-        stringBuilder.append("Blood Group -> ").append(bloodGroup).append("\n");
-
-        displayString = stringBuilder.toString();
-        textViewUserInfo.setText(displayString);
     }
 
     private void prepareCommands()

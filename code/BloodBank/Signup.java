@@ -4,8 +4,6 @@ package com.example.root.home;
  * Created by root on 28/3/17.
  */
 
-import android.app.ProgressDialog;
-import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -18,12 +16,9 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.sql.Statement;
 
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class Signup extends AppCompatActivity
@@ -35,10 +30,8 @@ public class Signup extends AppCompatActivity
     private EditText editTextMobileNumber;
     private EditText editTextCountry;
     private EditText editTextBloodgroup;
-
     private RadioGroup radioGroup;
     private Button buttonSignup;
-    private ProgressDialog progressDialog;
 
     private String name;
     private String username;
@@ -47,23 +40,7 @@ public class Signup extends AppCompatActivity
     private String mobileNumber;
     private String country;
     private String bloodGroup;
-
     private boolean isDonor;
-
-    private String server;
-    private String serverIpAddress;
-    private String serverPortNumber;
-    private String serverdatabase;
-    private String mYSQLDatabaseName;
-    private String url;
-    private String userNameMYSQL;
-    private String passwordMYSQL;
-
-    private String commandCreateUserTable;
-    private String commandInsertIntoUser;
-    private String commandCountUsername;
-    private String commandCountMobileNumber;
-    private  String commandCountEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -161,18 +138,94 @@ public class Signup extends AppCompatActivity
 
     private class MyListener implements View.OnClickListener
     {
+        private String commandCreateUserTable;
+        private String commandInsertIntoUser;
+        private String commandCountUsername;
+        private String commandCountMobileNumber;
+        private  String commandCountEmail;
+
+        private ResultSet resultSet;
+        private ResultSetMetaData resultSetMetaData;
+        private DataBase dataBase;
+        private String toastMessage;
+
         private int checkedRadioButtonId;
-        RadioButton checkedRadioButton;
+        private RadioButton checkedRadioButton;
+
+        private int countUserNames;
+        private int countMobiles;
+        private int countEmails;
 
         public void onClick( View v )
         {
             getUserInput();
             initializeCommands();
-            initializeMYSQLParametres();
-            progressDialog = ProgressDialog.show(Signup.this, "", "Connecting to Database...", true);
-            BackGroundThread backGroundThread = new BackGroundThread();
-            backGroundThread.execute();
+            dataBase = new DataBase(Signup.this);
+            sendCommands();
+            toastMessage = "Welcome to Blood Bank!!!";
 
+            if( countUserNames == 1 )
+            {
+                toastMessage = "Username Already Exists!!!";
+            }
+
+            else if( countMobiles == 1 )
+            {
+                toastMessage = "Mobile number already registered!!!";
+            }
+
+            else if( countEmails == 1 )
+            {
+                toastMessage = "Email already registered!!!";
+            }
+
+            else
+            {
+                dataBase.executeQuery(commandInsertIntoUser, true);
+            }
+
+            Toast.makeText(Signup.this, toastMessage, Toast.LENGTH_SHORT).show();
+        }
+
+        private void sendCommands()
+        {
+            try
+            {
+                dataBase.executeQuery(commandCreateUserTable, true);
+
+                dataBase.executeQuery(commandCountUsername, false);
+                resultSet = dataBase.getResultSet();
+                resultSetMetaData = resultSet.getMetaData();
+                resultSet.next();
+                countUserNames = resultSet.getInt(1);
+
+                if(countUserNames == 1)
+                {
+                    return;
+                }
+
+                dataBase.executeQuery(commandCountMobileNumber, false);
+                resultSet = dataBase.getResultSet();
+                resultSetMetaData = resultSet.getMetaData();
+                resultSet.next();
+                countMobiles = resultSet.getInt(1);
+
+                if(countMobiles == 1)
+                {
+                    return;
+                }
+
+                dataBase.executeQuery(commandCountEmail, false);
+                resultSet = dataBase.getResultSet();
+                resultSetMetaData = resultSet.getMetaData();
+                resultSet.next();
+                countEmails = resultSet.getInt(1);
+            }
+
+            catch(SQLException e)
+            {
+                e.printStackTrace();
+            }
         }
 
         private void getUserInput()
@@ -217,125 +270,6 @@ public class Signup extends AppCompatActivity
             stringBuilder.setLength(0);
             stringBuilder.append("select count(*) from user where email='").append(email).append("';");
             commandCountEmail = stringBuilder.toString();
-        }
-
-        private void initializeMYSQLParametres()
-        {
-            StringBuilder stringBuilder = new StringBuilder();
-            serverdatabase = "mysql";
-            serverIpAddress = "192.168.56.134";
-            serverPortNumber = "3306";
-            mYSQLDatabaseName = "test_db";
-
-            stringBuilder.append("jdbc:").append(serverdatabase).append("://").append(serverIpAddress).append(":").append(serverPortNumber).append("/").append(mYSQLDatabaseName);
-            url = stringBuilder.toString();
-            userNameMYSQL = "test_user";
-            passwordMYSQL = "Test_user9977";
-        }
-    }
-
-    private class BackGroundThread extends AsyncTask<String, Void, String>
-    {
-        private Connection connection;
-        private Statement statement;
-        private ResultSet resultSet;
-        private ResultSetMetaData resultSetMetaData;
-
-        int countUserNames;
-        int countMobiles;
-        int countEmails;
-        int statusMultipleUserNames;
-        int statusMultipleMobiles;
-        int statusMultipleEmails;
-
-        @Override
-        protected String doInBackground(String... parameters)
-        {
-            try
-            {
-                countUserNames = -9;
-                Class.forName("com.mysql.jdbc.Driver");
-                connection = DriverManager.getConnection(url, userNameMYSQL, passwordMYSQL);
-                statement = connection.createStatement();
-                statement.executeUpdate(commandCreateUserTable);
-
-                resultSet = statement.executeQuery(commandCountUsername);
-                resultSetMetaData = resultSet.getMetaData();
-                resultSet.next();
-                countUserNames = resultSet.getInt(1);
-
-                resultSet = statement.executeQuery(commandCountMobileNumber);
-                resultSetMetaData = resultSet.getMetaData();
-                resultSet.next();
-                countMobiles = resultSet.getInt(1);
-
-                resultSet = statement.executeQuery(commandCountEmail);
-                resultSetMetaData = resultSet.getMetaData();
-                resultSet.next();
-                countEmails = resultSet.getInt(1);
-
-                statusMultipleUserNames = 0;
-                statusMultipleMobiles = 0;
-                statusMultipleEmails = 0;
-
-                if( countUserNames == 1 )
-                {
-                    statusMultipleUserNames = 1;
-                    return null;
-                }
-
-                else if( countMobiles == 1 )
-                {
-                    statusMultipleMobiles = 1;
-                    return  null;
-                }
-
-                else if( countEmails == 1 )
-                {
-                    statusMultipleEmails = 1;
-                    return  null;
-                }
-
-                statement.executeUpdate(commandInsertIntoUser);
-
-            }
-
-            catch( ClassNotFoundException e )
-            {
-                e.printStackTrace();
-            }
-
-            catch ( SQLException e)
-            {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String parameter)
-        {
-            String toastMessage = "Welcome to Blood Bank!!!";
-
-            progressDialog.dismiss();
-
-            if( statusMultipleUserNames == 1 )
-            {
-                toastMessage = "Username Already Exists!!!";
-            }
-
-            else if( statusMultipleMobiles == 1 )
-            {
-                toastMessage = "Mobile number already registered!!!";
-            }
-
-            else if( statusMultipleEmails == 1 )
-            {
-                toastMessage = "Email already registered!!!";
-            }
-
-            Toast.makeText(Signup.this, toastMessage, Toast.LENGTH_SHORT).show();
         }
     }
 }

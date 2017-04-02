@@ -1,9 +1,7 @@
 package com.example.root.home;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.widget.TextView;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -31,18 +29,13 @@ public class DataBase
     private boolean isRead;
 
     private BackgroundThread backgroundThread;
-    private ProgressDialog progressDialog;
     private Connection connection;
     private Statement statement;
     private ResultSet resultSet;
 
-    private TextView textView;
-
-    public DataBase(Context inpContext, ProgressDialog inpProgressDialog, TextView inpTextView)
+    public DataBase(Context inpContext)
     {
         context = inpContext;
-        progressDialog = inpProgressDialog;
-        textView = inpTextView;
     }
 
     public void executeQuery(String inpCommand, boolean inpIsUpdate)
@@ -62,7 +55,6 @@ public class DataBase
         }
 
         backgroundThread = new BackgroundThread();
-        progressDialog = ProgressDialog.show( context, "", "Connecting to Database..." + isRead,true );
 
         try
         {
@@ -135,7 +127,7 @@ public class DataBase
         @Override
         protected void onPostExecute(String parameter)
         {
-            progressDialog.dismiss();
+            System.out.println("Completed");
         }
     }
 
