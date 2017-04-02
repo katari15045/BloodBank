@@ -4,6 +4,7 @@ package com.example.root.home;
  * Created by root on 28/3/17.
  */
 
+import android.app.ProgressDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -41,6 +42,8 @@ public class Signup extends AppCompatActivity
     private String country;
     private String bloodGroup;
     private boolean isDonor;
+
+    private SignupValidator signupValidator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -138,94 +141,15 @@ public class Signup extends AppCompatActivity
 
     private class MyListener implements View.OnClickListener
     {
-        private String commandCreateUserTable;
-        private String commandInsertIntoUser;
-        private String commandCountUsername;
-        private String commandCountMobileNumber;
-        private  String commandCountEmail;
-
-        private ResultSet resultSet;
-        private ResultSetMetaData resultSetMetaData;
-        private DataBase dataBase;
-        private String toastMessage;
-
         private int checkedRadioButtonId;
         private RadioButton checkedRadioButton;
 
-        private int countUserNames;
-        private int countMobiles;
-        private int countEmails;
 
         public void onClick( View v )
         {
             getUserInput();
-            initializeCommands();
-            dataBase = new DataBase(Signup.this);
-            sendCommands();
-            toastMessage = "Welcome to Blood Bank!!!";
-
-            if( countUserNames == 1 )
-            {
-                toastMessage = "Username Already Exists!!!";
-            }
-
-            else if( countMobiles == 1 )
-            {
-                toastMessage = "Mobile number already registered!!!";
-            }
-
-            else if( countEmails == 1 )
-            {
-                toastMessage = "Email already registered!!!";
-            }
-
-            else
-            {
-                dataBase.executeQuery(commandInsertIntoUser, true);
-            }
-
-            Toast.makeText(Signup.this, toastMessage, Toast.LENGTH_SHORT).show();
-        }
-
-        private void sendCommands()
-        {
-            try
-            {
-                dataBase.executeQuery(commandCreateUserTable, true);
-
-                dataBase.executeQuery(commandCountUsername, false);
-                resultSet = dataBase.getResultSet();
-                resultSetMetaData = resultSet.getMetaData();
-                resultSet.next();
-                countUserNames = resultSet.getInt(1);
-
-                if(countUserNames == 1)
-                {
-                    return;
-                }
-
-                dataBase.executeQuery(commandCountMobileNumber, false);
-                resultSet = dataBase.getResultSet();
-                resultSetMetaData = resultSet.getMetaData();
-                resultSet.next();
-                countMobiles = resultSet.getInt(1);
-
-                if(countMobiles == 1)
-                {
-                    return;
-                }
-
-                dataBase.executeQuery(commandCountEmail, false);
-                resultSet = dataBase.getResultSet();
-                resultSetMetaData = resultSet.getMetaData();
-                resultSet.next();
-                countEmails = resultSet.getInt(1);
-            }
-
-            catch(SQLException e)
-            {
-                e.printStackTrace();
-            }
+            signupValidator = new SignupValidator(Signup.this, name, username, password, email, mobileNumber, country, bloodGroup, isDonor );
+            signupValidator.validate();
         }
 
         private void getUserInput()
@@ -249,27 +173,6 @@ public class Signup extends AppCompatActivity
             {
                 isDonor = false;
             }
-        }
-
-        private void initializeCommands()
-        {
-            StringBuilder stringBuilder = new StringBuilder();
-            commandCreateUserTable = "CREATE TABLE IF NOT EXISTS user(name VARCHAR(100) NOT NULL, username VARCHAR(100), password VARCHAR(100) NOT NULL, mobileNumber VARCHAR(20) NOT NULL, email VARCHAR(100) NOT NULL, country VARCHAR(50) NOT NULL, isDonor BOOL NOT NULL, bloodGroup VARCHAR(5) NOT NULL, PRIMARY KEY(username) );";
-
-            stringBuilder.append("INSERT INTO user VALUES('").append(name).append("','").append(username).append("','").append(password).append("','").append(mobileNumber).append("','").append(email).append("','").append(country).append("',").append(isDonor).append(",'").append(bloodGroup).append("');");
-            commandInsertIntoUser = stringBuilder.toString();
-
-            stringBuilder.setLength(0);
-            stringBuilder.append("select count(*) from user where username='").append(username).append("';");
-            commandCountUsername = stringBuilder.toString();
-
-            stringBuilder.setLength(0);
-            stringBuilder.append("select count(*) from user where mobileNumber='").append(mobileNumber).append("';");
-            commandCountMobileNumber = stringBuilder.toString();
-
-            stringBuilder.setLength(0);
-            stringBuilder.append("select count(*) from user where email='").append(email).append("';");
-            commandCountEmail = stringBuilder.toString();
         }
     }
 }

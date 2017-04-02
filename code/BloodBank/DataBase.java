@@ -1,5 +1,6 @@
 package com.example.root.home;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 
@@ -13,8 +14,7 @@ import java.sql.Statement;
  * Created by root on 1/4/17.
  */
 
-public class DataBase
-{
+public class DataBase {
     private Context context;
 
     private String ipAddress;
@@ -33,86 +33,62 @@ public class DataBase
     private Statement statement;
     private ResultSet resultSet;
 
-    public DataBase(Context inpContext)
-    {
+    public DataBase(Context inpContext) {
         context = inpContext;
     }
 
-    public void executeQuery(String inpCommand, boolean inpIsUpdate)
-    {
+    public void executeQuery(String inpCommand, boolean inpIsUpdate) {
         command = inpCommand;
 
-        if(inpIsUpdate)
-        {
+        if (inpIsUpdate) {
             isUpdate = true;
             isRead = false;
-        }
-
-        else
-        {
+        } else {
             isRead = true;
             isUpdate = false;
         }
 
         backgroundThread = new BackgroundThread();
 
-        try
-        {
+        try {
             backgroundThread.execute().get();
-        }
-
-        catch(Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public ResultSet getResultSet()
-    {
+    public ResultSet getResultSet() {
         return resultSet;
     }
 
-    private class BackgroundThread extends AsyncTask<String, Void, String>
-    {
+    private class BackgroundThread extends AsyncTask<String, Void, String> {
         private StringBuilder result;
 
         @Override
-        protected String doInBackground(String... parameters)
-        {
-            try
-            {
+        protected String doInBackground(String... parameters) {
+            try {
                 initializeServerDetails();
 
                 Class.forName("com.mysql.jdbc.Driver");
                 connection = DriverManager.getConnection(url, username, password);
                 statement = connection.createStatement();
 
-                if(isRead)
-                {
+                if (isRead) {
                     resultSet = statement.executeQuery(command);
-                }
-
-                else
-                {
+                } else {
 
                     statement.executeUpdate(command);
                 }
-            }
-            catch( ClassNotFoundException e )
-            {
+            } catch (ClassNotFoundException e) {
                 e.printStackTrace();
-            }
-
-            catch ( SQLException e)
-            {
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
 
             return null;
         }
 
-        private void initializeServerDetails()
-        {
+        private void initializeServerDetails() {
             StringBuilder stringBuilder = new StringBuilder();
             ipAddress = "192.168.56.134";
             portNumber = "3306";
@@ -124,11 +100,5 @@ public class DataBase
             password = "Test_user9977";
         }
 
-        @Override
-        protected void onPostExecute(String parameter)
-        {
-            System.out.println("Completed");
-        }
     }
-
 }
