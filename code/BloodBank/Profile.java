@@ -2,6 +2,7 @@ package com.example.root.home;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.ImageView;
 
 /**
  * Created by root on 29/3/17.
@@ -9,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 
 public class Profile extends AppCompatActivity
 {
+
+
     @Override
     public void onCreate(Bundle savedInstances)
     {
