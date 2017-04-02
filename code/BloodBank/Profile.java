@@ -1,19 +1,11 @@
 package com.example.root.home;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.hardware.camera2.params.StreamConfigurationMap;
 import android.os.Bundle;
-import android.support.annotation.BoolRes;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import static com.example.root.home.R.layout.abc_action_bar_up_container;
-import static com.example.root.home.R.layout.profile_item_view;
+import android.widget.Toast;
 
 /**
  * Created by root on 29/3/17.
@@ -21,34 +13,34 @@ import static com.example.root.home.R.layout.profile_item_view;
 
 public class Profile extends AppCompatActivity
 {
-    private ImageView imageViewName;
-    private ImageView imageEditName;
-    private ImageView imageViewUsername;
-    private ImageView imageEditUsername;
-    private ImageView imageEditPassword;
-    private ImageView imageViewMobile;
-    private ImageView imageEditMobile;
-    private ImageView imageViewEmail;
-    private ImageView imageEditEmail;
-    private ImageView imageViewCountry;
-    private ImageView imageEditCountry;
-    private ImageView imageViewBloodGroup;
-    private ImageView imageEditBloodGroup;
-    private ImageView imageViewIsDonor;
-    private ImageView imageEditIsDonor;
+    protected static ImageView imageViewName;
+    protected static ImageView imageEditName;
+    protected static ImageView imageViewUsername;
+    protected static ImageView imageEditUsername;
+    protected static ImageView imageEditPassword;
+    protected static ImageView imageViewMobile;
+    protected static ImageView imageEditMobile;
+    protected static ImageView imageViewEmail;
+    protected static ImageView imageEditEmail;
+    protected static ImageView imageViewCountry;
+    protected static ImageView imageEditCountry;
+    protected static ImageView imageViewBloodGroup;
+    protected static ImageView imageEditBloodGroup;
+    protected static ImageView imageViewIsDonor;
+    protected static ImageView imageEditIsDonor;
 
-    private TextView textViewProfileItemView;
+    protected static TextView textViewProfileItemView;
 
-    private String name;
-    private String username;
-    private String password;
-    private String mobile;
-    private String email;
-    private String country;
-    private String bloodGroup;
-    private boolean isDonor;
+    protected static String name;
+    protected static String username;
+    protected static String password;
+    protected static String mobile;
+    protected static String email;
+    protected static String country;
+    protected static String bloodGroup;
+    protected static boolean isDonor;
 
-    private DataBase dataBase;
+    private ProfileViewHandler profileViewHandler;
 
     @Override
     public void onCreate(Bundle savedInstances)
@@ -97,161 +89,15 @@ public class Profile extends AppCompatActivity
 
     private void handleImageViews()
     {
-        dataBase = new DataBase(Profile.this);
+        profileViewHandler = new ProfileViewHandler( Profile.this );
 
-        handleNameView();
-        handleUsernameView();
-        handleMobileView();
-        handleEmailView();
-        handleCountryView();
-        handleBloodGroupView();
-        handleIsDonorView();
+        imageViewName.setOnClickListener( profileViewHandler.new NameViewHandler() );
+        imageViewUsername.setOnClickListener( profileViewHandler.new UsernameViewHandler() );
+        imageViewMobile.setOnClickListener( profileViewHandler.new MobileViewHandler()  );
+        imageViewEmail.setOnClickListener( profileViewHandler.new EmailViewHandler() );
+        imageViewCountry.setOnClickListener( profileViewHandler.new CountryViewHandler() );
+        imageViewBloodGroup.setOnClickListener( profileViewHandler.new BloodGroupViewHandler() );
+        imageViewIsDonor.setOnClickListener( profileViewHandler.new IsDonorViewHandler() );
     }
 
-    private void handleNameView()
-    {
-        imageViewName.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                AlertDialog.Builder builder = new AlertDialog.Builder(Profile.this);
-                View myView = LayoutInflater.from(Profile.this).inflate(R.layout.profile_item_view,null);
-                textViewProfileItemView = (TextView) myView.findViewById(R.id.textViewProfileItemView);
-                builder.setNegativeButton("Ok", null);
-                builder.setView(myView);
-                builder.setCancelable(false);
-                builder.setTitle("Name");
-                textViewProfileItemView.setText(name);
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
-            }
-        });
-    }
-
-    private void handleUsernameView()
-    {
-        imageViewUsername.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                AlertDialog.Builder builder = new AlertDialog.Builder(Profile.this);
-                View myView = LayoutInflater.from(Profile.this).inflate(R.layout.profile_item_view,null);
-                textViewProfileItemView = (TextView) myView.findViewById(R.id.textViewProfileItemView);
-                builder.setNegativeButton("Ok", null);
-                builder.setView(myView);
-                builder.setCancelable(false);
-                builder.setTitle("Username");
-                textViewProfileItemView.setText(username);
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
-            }
-        });
-    }
-
-    private void handleMobileView()
-    {
-        imageViewMobile.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                AlertDialog.Builder builder = new AlertDialog.Builder(Profile.this);
-                View myView = LayoutInflater.from(Profile.this).inflate(R.layout.profile_item_view,null);
-                textViewProfileItemView = (TextView) myView.findViewById(R.id.textViewProfileItemView);
-                builder.setNegativeButton("Ok", null);
-                builder.setView(myView);
-                builder.setCancelable(false);
-                builder.setTitle("Mobile");
-                textViewProfileItemView.setText(mobile);
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
-            }
-        });
-    }
-
-    private void handleEmailView()
-    {
-        imageViewEmail.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                AlertDialog.Builder builder = new AlertDialog.Builder(Profile.this);
-                View myView = LayoutInflater.from(Profile.this).inflate(R.layout.profile_item_view,null);
-                textViewProfileItemView = (TextView) myView.findViewById(R.id.textViewProfileItemView);
-                builder.setNegativeButton("Ok", null);
-                builder.setView(myView);
-                builder.setCancelable(false);
-                builder.setTitle("Email");
-                textViewProfileItemView.setText(email);
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
-            }
-        });
-    }
-
-    private void handleCountryView()
-    {
-        imageViewCountry.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                AlertDialog.Builder builder = new AlertDialog.Builder(Profile.this);
-                View myView = LayoutInflater.from(Profile.this).inflate(R.layout.profile_item_view,null);
-                textViewProfileItemView = (TextView) myView.findViewById(R.id.textViewProfileItemView);
-                builder.setNegativeButton("Ok", null);
-                builder.setView(myView);
-                builder.setCancelable(false);
-                builder.setTitle("Country");
-                textViewProfileItemView.setText(country);
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
-            }
-        });
-    }
-
-    private void handleBloodGroupView()
-    {
-        imageViewBloodGroup.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                AlertDialog.Builder builder = new AlertDialog.Builder(Profile.this);
-                View myView = LayoutInflater.from(Profile.this).inflate(R.layout.profile_item_view,null);
-                textViewProfileItemView = (TextView) myView.findViewById(R.id.textViewProfileItemView);
-                builder.setNegativeButton("Ok", null);
-                builder.setView(myView);
-                builder.setCancelable(false);
-                builder.setTitle("Blood Group");
-                textViewProfileItemView.setText(bloodGroup);
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
-            }
-        });
-    }
-
-    private void handleIsDonorView()
-    {
-        imageViewIsDonor.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                AlertDialog.Builder builder = new AlertDialog.Builder(Profile.this);
-                View myView = LayoutInflater.from(Profile.this).inflate(R.layout.profile_item_view,null);
-                textViewProfileItemView = (TextView) myView.findViewById(R.id.textViewProfileItemView);
-                builder.setNegativeButton("Ok", null);
-                builder.setView(myView);
-                builder.setCancelable(false);
-                builder.setTitle("Are you a donor?");
-                textViewProfileItemView.setText( Boolean.toString(isDonor) );
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
-            }
-        });
-    }
 }
