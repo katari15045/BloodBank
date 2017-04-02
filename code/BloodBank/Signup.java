@@ -4,7 +4,6 @@ package com.example.root.home;
  * Created by root on 28/3/17.
  */
 
-import android.app.ProgressDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -15,12 +14,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Toast;
-
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-
-import java.sql.SQLException;
 
 public class Signup extends AppCompatActivity
 {
