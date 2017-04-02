@@ -41,7 +41,6 @@ public class Profile extends AppCompatActivity
     protected static boolean isDonor;
 
     private ProfileViewHandler profileViewHandler;
-    private ProfileEditHandler profileEditHandler;
 
     @Override
     public void onCreate(Bundle savedInstances)
@@ -104,8 +103,6 @@ public class Profile extends AppCompatActivity
 
     private void handleImageEdits()
     {
-        profileEditHandler = new ProfileEditHandler(Profile.this);
-
-        imageEditName.setOnClickListener( profileEditHandler.new NameEditHandler() );
+        imageEditName.setOnClickListener( new ProfileNameUpdator(Profile.this) );
     }
 }
