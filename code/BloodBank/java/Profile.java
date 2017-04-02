@@ -104,5 +104,6 @@ public class Profile extends AppCompatActivity
     private void handleImageEdits()
     {
         imageEditName.setOnClickListener( new ProfileNameUpdator(Profile.this) );
+        imageEditUsername.setOnClickListener( new ProfileUsernameUpdator(Profile.this) );
     }
 }
