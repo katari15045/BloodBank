@@ -113,6 +113,14 @@ public class Home extends AppCompatActivity
     private void handleProfileItem()
     {
         Intent intent = new Intent( Home.this, Profile.class );
+        intent.putExtra("labelName", name);
+        intent.putExtra("labelUsername", username);
+        intent.putExtra("labelPassword", password);
+        intent.putExtra("labelMobile", mobileNumber);
+        intent.putExtra("labelEmail", emailId);
+        intent.putExtra("labelCountry", country);
+        intent.putExtra("labelBloodGroup", bloodGroup);
+        intent.putExtra("labelIsDonor", isDonor);
         startActivity(intent);
     }
 }
