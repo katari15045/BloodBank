@@ -3,6 +3,10 @@ package com.example.root.home;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -109,5 +113,7 @@ public class Profile extends AppCompatActivity
         imageEditMobile.setOnClickListener( new ProfileMobileUpdator(Profile.this) );
         imageEditEmail.setOnClickListener( new ProfileEmailUpdator(Profile.this) );
         imageEditCountry.setOnClickListener( new ProfileCountryUpdator(Profile.this) );
+        imageEditBloodGroup.setOnClickListener( new ProfileBloodGroupUpdator(Profile.this) );
     }
+
 }
