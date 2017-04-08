@@ -22,7 +22,9 @@ public class ProfileUsernameUpdator extends Profile implements View.OnClickListe
     private DataBase dataBase;
     private String commandUpdateUsername;
     private String commandCountUsername;
+    private String commandUpdateUsernameInExtraTable;
     private EditText editTextNewtUsername;
+    private StringBuilder tableToUpdate;
 
     private View myView;
 
@@ -46,8 +48,7 @@ public class ProfileUsernameUpdator extends Profile implements View.OnClickListe
         alertDialog.show();
     }
 
-    private class MyListener implements DialogInterface.OnClickListener
-    {
+    private class MyListener implements DialogInterface.OnClickListener {
         private String updatedUsername;
         private ResultSet resultSet;
         private ResultSetMetaData resultSetMetaData;
@@ -56,40 +57,34 @@ public class ProfileUsernameUpdator extends Profile implements View.OnClickListe
         private String toastMessage;
 
         @Override
-        public void onClick(DialogInterface dialog, int which)
-        {
+        public void onClick(DialogInterface dialog, int which) {
             dataBase = new DataBase(context);
-            initializeCommand();
+            initializeCommands();
 
-            try
-            {
-                dataBase.executeQuery( commandCountUsername, false );
+            try {
+                dataBase.executeQuery(commandCountUsername, false);
                 resultSet = dataBase.getResultSet();
                 resultSetMetaData = resultSet.getMetaData();
                 resultSet.next();
                 countUsernames = resultSet.getInt(1);
 
-            }
-
-            catch (SQLException e)
-            {
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
 
             toastMessage = "Username already Exists!!!";
 
-            if( countUsernames == 0 )
-            {
-                dataBase.executeQuery( commandUpdateUsername, true );
+            if (countUsernames == 0) {
+                dataBase.executeQuery(commandUpdateUsername, true);
+                dataBase.executeQuery( commandUpdateUsernameInExtraTable, true );
                 username = updatedUsername;
                 toastMessage = "Username Updated!!!";
             }
 
-            Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, toastMessage, Toast.LENGTH_LONG).show();
         }
 
-        private void initializeCommand()
-        {
+        private void initializeCommands() {
             StringBuilder stringBuilder = new StringBuilder();
             editTextNewtUsername = (EditText) myView.findViewById(R.id.editTextEditUsername);
             updatedUsername = editTextNewtUsername.getText().toString();
@@ -101,8 +96,43 @@ public class ProfileUsernameUpdator extends Profile implements View.OnClickListe
             stringBuilder.append("update user set username='").append(updatedUsername).append("' where username='")
                     .append(username).append("';");
             commandUpdateUsername = stringBuilder.toString();
+
+            decideTable();
+            stringBuilder.setLength(0);
+            stringBuilder.append("update ").append( tableToUpdate.toString() ).append(" set username='").append(updatedUsername).append("' where username='")
+                    .append(username).append("';");
+            commandUpdateUsernameInExtraTable = stringBuilder.toString();
         }
+
+        private void decideTable()
+        {
+            decideLHS();
+            decideRHS();
+        }
+
+        private void decideLHS() {
+            tableToUpdate = new StringBuilder();
+
+            if (bloodGroup.equals("A +") || bloodGroup.equals("A -"))
+            {
+                tableToUpdate.append("a");
+            } else if (bloodGroup.equals("B +") || bloodGroup.equals("B -")) {
+                tableToUpdate.append("b");
+            } else if (bloodGroup.equals("O +") || bloodGroup.equals("O -")) {
+                tableToUpdate.append("o");
+            } else {
+                tableToUpdate.append("ab");
+            }
+        }
+
+        private void decideRHS() {
+            if (isDonor) {
+                tableToUpdate.append("Donor");
+            } else {
+                tableToUpdate.append("Acceptor");
+            }
+
+        }
+
     }
-
-
 }
