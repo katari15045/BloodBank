@@ -132,7 +132,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/editTextBloodGroup"
-                android:hint="Blood Group(Long Press to choose)"
+                android:hint="Blood Group(Press to choose)"
                 />
 
         </android.support.design.widget.TextInputLayout>

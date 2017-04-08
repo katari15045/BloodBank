@@ -32,6 +32,8 @@ public class ProfileBloodGroupUpdator extends Profile implements View.OnClickLis
     {
         myView = LayoutInflater.from(context).inflate(R.layout.edit_bloodgroup,null);
         editTextNewBloodGroup = (EditText) myView.findViewById(R.id.editTextEditBloodGroup);
+        editTextNewBloodGroup.setOnClickListener( new MyListenerContextMenu() );
+
         registerForContextMenu(editTextNewBloodGroup);
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setNegativeButton("Cancel", null);
@@ -65,6 +67,15 @@ public class ProfileBloodGroupUpdator extends Profile implements View.OnClickLis
             commandUpdateBloodGroup = stringBuilder.toString();
         }
 
+    }
+
+    private class MyListenerContextMenu implements View.OnClickListener
+    {
+        @Override
+        public void onClick(View v)
+        {
+            openContextMenu(editTextNewBloodGroup);
+        }
     }
 
     @Override

@@ -45,6 +45,16 @@ public class Signup extends AppCompatActivity
         setContentView(R.layout.activity_signup);
 
         initializeViews();
+
+        editTextBloodgroup.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                openContextMenu(editTextBloodgroup);
+            }
+        });
+
         registerForContextMenu(editTextBloodgroup);
         buttonSignup.setOnClickListener( new MyListener() );
     }
