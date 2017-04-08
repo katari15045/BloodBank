@@ -114,6 +114,7 @@ public class Profile extends AppCompatActivity
         imageEditEmail.setOnClickListener( new ProfileEmailUpdator(Profile.this) );
         imageEditCountry.setOnClickListener( new ProfileCountryUpdator(Profile.this) );
         imageEditBloodGroup.setOnClickListener( new ProfileBloodGroupUpdator(Profile.this) );
+        imageEditIsDonor.setOnClickListener( new ProfileDonorUpdator(Profile.this) );
     }
 
 }
