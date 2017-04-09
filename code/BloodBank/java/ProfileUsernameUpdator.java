@@ -24,8 +24,9 @@ public class ProfileUsernameUpdator extends Profile implements View.OnClickListe
     private String commandCountUsername;
     private String commandUpdateUsernameInExtraTable;
     private EditText editTextNewtUsername;
-    private StringBuilder tableToUpdate;
+    private String tableToUpdate;
 
+    private TableDecider tableDecider;
     private View myView;
 
     public ProfileUsernameUpdator(Context inpContext)
@@ -97,41 +98,14 @@ public class ProfileUsernameUpdator extends Profile implements View.OnClickListe
                     .append(username).append("';");
             commandUpdateUsername = stringBuilder.toString();
 
-            decideTable();
+            tableDecider = new TableDecider(bloodGroup, isDonor);
+            tableDecider.decide();
+            tableToUpdate = tableDecider.getTable();
+
             stringBuilder.setLength(0);
-            stringBuilder.append("update ").append( tableToUpdate.toString() ).append(" set username='").append(updatedUsername).append("' where username='")
+            stringBuilder.append("update ").append(tableToUpdate).append(" set username='").append(updatedUsername).append("' where username='")
                     .append(username).append("';");
             commandUpdateUsernameInExtraTable = stringBuilder.toString();
-        }
-
-        private void decideTable()
-        {
-            decideLHS();
-            decideRHS();
-        }
-
-        private void decideLHS() {
-            tableToUpdate = new StringBuilder();
-
-            if (bloodGroup.equals("A +") || bloodGroup.equals("A -"))
-            {
-                tableToUpdate.append("a");
-            } else if (bloodGroup.equals("B +") || bloodGroup.equals("B -")) {
-                tableToUpdate.append("b");
-            } else if (bloodGroup.equals("O +") || bloodGroup.equals("O -")) {
-                tableToUpdate.append("o");
-            } else {
-                tableToUpdate.append("ab");
-            }
-        }
-
-        private void decideRHS() {
-            if (isDonor) {
-                tableToUpdate.append("Donor");
-            } else {
-                tableToUpdate.append("Acceptor");
-            }
-
         }
 
     }
