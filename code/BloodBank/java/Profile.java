@@ -45,6 +45,8 @@ public class Profile extends AppCompatActivity
     protected static boolean isDonor;
 
     private ProfileViewHandler profileViewHandler;
+    protected static TableDecider tableDecider;
+    protected static String tableToUpdate;
 
     @Override
     public void onCreate(Bundle savedInstances)

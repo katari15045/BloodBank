@@ -19,6 +19,8 @@ public class ProfileNameUpdator extends Profile implements View.OnClickListener
     private String commandUpdateName;
     private EditText editTextNewName;
 
+    private String commandUpdateNameInExtraTable;
+
     public ProfileNameUpdator(Context inpContext)
     {
         context = inpContext;
@@ -40,6 +42,7 @@ public class ProfileNameUpdator extends Profile implements View.OnClickListener
                 dataBase = new DataBase(context);
                 initializeCommand();
                 dataBase.executeQuery( commandUpdateName, true );
+                dataBase.executeQuery( commandUpdateNameInExtraTable, true );
                 name = updatedName;
                 Toast.makeText(context, "Name updated!!!", Toast.LENGTH_SHORT).show();
             }
@@ -53,6 +56,15 @@ public class ProfileNameUpdator extends Profile implements View.OnClickListener
                 stringBuilder.append("update user set name='").append(updatedName).append("' where username='")
                         .append(username).append("';");
                 commandUpdateName = stringBuilder.toString();
+
+                tableDecider = new TableDecider(bloodGroup, isDonor);
+                tableDecider.decide();
+                tableToUpdate = tableDecider.getTable();
+
+                stringBuilder.setLength(0);
+                stringBuilder.append("update ").append(tableToUpdate).append(" set name='").append(updatedName).append("' where username='")
+                        .append(username).append("';");
+                commandUpdateNameInExtraTable = stringBuilder.toString();
             }
         });
 

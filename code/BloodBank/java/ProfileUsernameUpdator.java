@@ -24,9 +24,7 @@ public class ProfileUsernameUpdator extends Profile implements View.OnClickListe
     private String commandCountUsername;
     private String commandUpdateUsernameInExtraTable;
     private EditText editTextNewtUsername;
-    private String tableToUpdate;
 
-    private TableDecider tableDecider;
     private View myView;
 
     public ProfileUsernameUpdator(Context inpContext)
