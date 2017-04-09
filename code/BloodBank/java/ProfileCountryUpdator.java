@@ -17,6 +17,7 @@ public class ProfileCountryUpdator extends Profile implements View.OnClickListen
     private Context context;
     private DataBase dataBase;
     private String commandUpdateCountry;
+    private String commandUpdateCountryInExtraTable;
     private EditText editTextNewCountry;
 
     public ProfileCountryUpdator(Context inpContext)
@@ -32,15 +33,24 @@ public class ProfileCountryUpdator extends Profile implements View.OnClickListen
         builder.setPositiveButton("Update", new DialogInterface.OnClickListener()
         {
             String updatedCountry;
+            String toastMessage;
 
             @Override
             public void onClick(DialogInterface dialog, int which)
             {
                 dataBase = new DataBase(context);
                 initializeCommand();
-                dataBase.executeQuery( commandUpdateCountry, true );
-                country = updatedCountry;
-                Toast.makeText(context, "Country updated!!!", Toast.LENGTH_SHORT).show();
+                toastMessage = "That's same as the previous one!!!";
+
+                if( !country.equals(updatedCountry) )
+                {
+                    dataBase.executeQuery( commandUpdateCountry, true );
+                    dataBase.executeQuery( commandUpdateCountryInExtraTable, true );
+                    country = updatedCountry;
+                    toastMessage = "Country updated!!!";
+                }
+
+                Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show();
             }
 
             private void initializeCommand()
@@ -52,6 +62,15 @@ public class ProfileCountryUpdator extends Profile implements View.OnClickListen
                 stringBuilder.append("update user set country='").append(updatedCountry).append("' where username='")
                         .append(username).append("';");
                 commandUpdateCountry = stringBuilder.toString();
+
+                tableDecider = new TableDecider(bloodGroup, isDonor);
+                tableDecider.decide();
+                tableToUpdate = tableDecider.getTable();
+
+                stringBuilder.setLength(0);
+                stringBuilder.append("update ").append(tableToUpdate).append(" set country='").append(updatedCountry).append("' where username='")
+                        .append(username).append("';");
+                commandUpdateCountryInExtraTable = stringBuilder.toString();
             }
         });
 
