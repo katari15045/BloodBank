@@ -73,7 +73,8 @@ public class ProfileUsernameUpdator extends Profile implements View.OnClickListe
 
             toastMessage = "Username already Exists!!!";
 
-            if (countUsernames == 0) {
+            if (countUsernames == 0)
+            {
                 dataBase.executeQuery(commandUpdateUsername, true);
                 dataBase.executeQuery( commandUpdateUsernameInExtraTable, true );
                 username = updatedUsername;

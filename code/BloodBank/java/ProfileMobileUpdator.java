@@ -22,6 +22,7 @@ public class ProfileMobileUpdator extends Profile implements View.OnClickListene
     private DataBase dataBase;
     private String commandUpdateMobile;
     private String commandCountMobile;
+    private String commandUpdateMobileInExtraTable;
     private EditText editTextNewMobile;
 
     private View myView;
@@ -81,6 +82,7 @@ public class ProfileMobileUpdator extends Profile implements View.OnClickListene
             if( countMobiles == 0 )
             {
                 dataBase.executeQuery( commandUpdateMobile, true );
+                dataBase.executeQuery( commandUpdateMobileInExtraTable, true );
                 mobile = updatedMobile;
                 toastMessage = "Mobile Number Updated!!!";
             }
@@ -101,6 +103,15 @@ public class ProfileMobileUpdator extends Profile implements View.OnClickListene
             stringBuilder.append("update user set mobileNumber='").append(updatedMobile).append("' where username='")
                     .append(username).append("';");
             commandUpdateMobile = stringBuilder.toString();
+
+            tableDecider = new TableDecider(bloodGroup, isDonor);
+            tableDecider.decide();
+            tableToUpdate = tableDecider.getTable();
+
+            stringBuilder.setLength(0);
+            stringBuilder.append("update ").append(tableToUpdate).append(" set mobileNumber='").append(updatedMobile).append("' where username='")
+                    .append(username).append("';");
+            commandUpdateMobileInExtraTable = stringBuilder.toString();
         }
     }
 

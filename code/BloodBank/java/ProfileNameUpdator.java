@@ -35,16 +35,24 @@ public class ProfileNameUpdator extends Profile implements View.OnClickListener
         builder.setPositiveButton("Update", new DialogInterface.OnClickListener()
         {
             String updatedName;
+            String toastMessage;
 
             @Override
             public void onClick(DialogInterface dialog, int which)
             {
                 dataBase = new DataBase(context);
                 initializeCommand();
-                dataBase.executeQuery( commandUpdateName, true );
-                dataBase.executeQuery( commandUpdateNameInExtraTable, true );
-                name = updatedName;
-                Toast.makeText(context, "Name updated!!!", Toast.LENGTH_SHORT).show();
+                toastMessage = "That's same as the previous one!!!";
+
+                if( username != updatedName )
+                {
+                    dataBase.executeQuery( commandUpdateName, true );
+                    dataBase.executeQuery( commandUpdateNameInExtraTable, true );
+                    name = updatedName;
+                    toastMessage = "Name updated!!!";
+                }
+
+                Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show();
             }
 
             private void initializeCommand()
