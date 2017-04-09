@@ -3,7 +3,6 @@ package com.example.root.home;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RadioButton;
@@ -64,10 +63,12 @@ public class ProfileDonorUpdator extends Profile implements View.OnClickListener
         private RadioButton checkedRadioButton;
         private boolean updatedIsDonor;
         private String toastMessage;
+        private String tableToFree;
 
         @Override
         public void onClick(DialogInterface dialog, int which)
         {
+            EmptyTableEraser emptyTableEraser = new EmptyTableEraser(tableToFree, context);
             dataBase = new DataBase(context);
             initializeCommand();
             toastMessage = "That's same as the old one!!!";
@@ -76,11 +77,10 @@ public class ProfileDonorUpdator extends Profile implements View.OnClickListener
             {
                 dataBase.executeQuery( commandUpdateIsDonor, true );
                 dataBase.executeQuery( commandDeleteIsDonorInExtraTable, true );
-                deleteTableIfEmpty();
+                emptyTableEraser.start();
                 extraTableCreatorCumInserter = new ExtraTableCreatorCumInserter(bloodGroup, updatedIsDonor, username, name, mobile, email, country, context);
                 extraTableCreatorCumInserter.start();
                 isDonor = updatedIsDonor;
-                Log.d("Saketh2", "ProfileDonorUpdator 1");
 
                 toastMessage = "Data updated!!!";
             }
@@ -108,40 +108,7 @@ public class ProfileDonorUpdator extends Profile implements View.OnClickListener
                 stringBuilder.append( "DELETE FROM " ).append(tableToUpdate).append(" WHERE username='").append(username).append("';");
                 commandDeleteIsDonorInExtraTable = stringBuilder.toString();
 
-                stringBuilder.setLength(0);;
-                stringBuilder.append("SELECT COUNT(*) FROM ").append(tableToUpdate).append(";");
-                commandCountEntries = stringBuilder.toString();
-
-                stringBuilder.setLength(0);
-                stringBuilder.append("DROP TABLE ").append(tableToUpdate).append(";");
-                commandDropTable = stringBuilder.toString();
-            }
-        }
-
-        private void deleteTableIfEmpty()
-        {
-            ResultSet resultSet = null;
-            ResultSetMetaData resultSetMetaData = null;
-            int countEntries = 0;
-
-            try
-            {
-                Log.d("Saketh3", "ProfileDonorUpdator delete table -> " + commandCountEntries);
-                dataBase.executeQuery( commandCountEntries, false );
-                resultSet = dataBase.getResultSet();
-                resultSetMetaData = resultSet.getMetaData();
-                resultSet.next();
-                countEntries = resultSet.getInt(1);
-
-                if( countEntries == 0 )
-                {
-                    dataBase.executeQuery( commandDropTable, true );
-                }
-            }
-
-            catch (SQLException e)
-            {
-                e.printStackTrace();
+                tableToFree = tableToUpdate;
             }
         }
 

@@ -3,6 +3,7 @@ package com.example.root.home;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -19,7 +20,10 @@ public class ProfileBloodGroupUpdator extends Profile implements View.OnClickLis
 {
     private Context context;
     private DataBase dataBase;
+    private String updatedBloodGroup;
     private String commandUpdateBloodGroup;
+    private String commandUpdateIsPositiveExtraTable;
+    private String commandDeleteEntryExtraTable;
     protected EditText editTextNewBloodGroup;
     private View myView;
 
@@ -47,26 +51,96 @@ public class ProfileBloodGroupUpdator extends Profile implements View.OnClickLis
 
     private class MyPositiveListener implements DialogInterface.OnClickListener
     {
-        String updatedBloodGroup;
+        TableDecider tableDecider;
+        ExtraTableCreatorCumInserter extraTableCreatorCumInserter;
+        EmptyTableEraser emptyTableEraser;
+        String oldTable;
+        String newTable;
+        String toastMessage;
+        boolean statusSameTable;
+        boolean updatedIsPositive;
 
         @Override
         public void onClick(DialogInterface dialog, int which)
         {
             dataBase = new DataBase(context);
             initializeCommand();
-            dataBase.executeQuery( commandUpdateBloodGroup, true );
-            Toast.makeText(context, "Blood Group updated!!!", Toast.LENGTH_SHORT).show();
+
+           if( !bloodGroup.equals(updatedBloodGroup) )
+           {
+               dataBase.executeQuery( commandUpdateBloodGroup, true );
+
+               if( statusSameTable )
+               {
+                   dataBase.executeQuery( commandUpdateIsPositiveExtraTable, true );
+               }
+
+               else
+               {
+                   dataBase.executeQuery( commandDeleteEntryExtraTable, true );
+                   emptyTableEraser = new EmptyTableEraser(oldTable, context);
+                   emptyTableEraser.start();
+
+                   extraTableCreatorCumInserter = new ExtraTableCreatorCumInserter(updatedBloodGroup, isDonor, username, name, mobile, email, country, context);
+                   extraTableCreatorCumInserter.start();
+               }
+
+               toastMessage = "Blood Group updated!!!";
+               bloodGroup = updatedBloodGroup;
+           }
+
+           else
+           {
+               toastMessage = "That's same as the old one!!!";
+           }
+
+            Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show();
         }
 
         private void initializeCommand()
         {
+            isItTheSameTable();
+
             StringBuilder stringBuilder = new StringBuilder();
-            updatedBloodGroup = bloodGroup;
+            IsPositiveDecider isPositiveDecider;
+
+            isPositiveDecider = new IsPositiveDecider(updatedBloodGroup);
+            isPositiveDecider.decide();
+            updatedIsPositive = isPositiveDecider.getDecision();
+
             stringBuilder.append("update user set bloodGroup='").append(updatedBloodGroup).append("' where username='")
                     .append(username).append("';");
             commandUpdateBloodGroup = stringBuilder.toString();
+
+            stringBuilder.setLength(0);
+            stringBuilder.append("UPDATE ").append(oldTable).append(" SET isPositive=").append(updatedIsPositive).append(";");
+            commandUpdateIsPositiveExtraTable = stringBuilder.toString();
+
+            stringBuilder.setLength(0);
+            Log.d("SAKETH 1 -> ", " Old Table -> " + oldTable);
+            Log.d("SAKETH 2 -> ", " New Table -> " + newTable);
+            stringBuilder.append("DELETE FROM ").append(oldTable).append(" WHERE username='").append(username).append("';");
+            commandDeleteEntryExtraTable = stringBuilder.toString();
         }
 
+        private boolean isItTheSameTable()
+        {
+            statusSameTable = false;
+            tableDecider = new TableDecider( bloodGroup, isDonor );
+            tableDecider.decide();
+            oldTable = tableDecider.getTable();
+
+            tableDecider = new TableDecider( updatedBloodGroup, isDonor );
+            tableDecider.decide();
+            newTable = tableDecider.getTable();
+
+            if( oldTable.equals(newTable) )
+            {
+                statusSameTable = true;
+            }
+
+            return statusSameTable;
+        }
     }
 
     private class MyListenerContextMenu implements View.OnClickListener
@@ -105,42 +179,42 @@ public class ProfileBloodGroupUpdator extends Profile implements View.OnClickLis
 
         if( itemId == R.id.itemAPos )
         {
-            bloodGroup = "A +";
+            updatedBloodGroup = "A +";
         }
 
         else if( itemId == R.id.itemANeg )
         {
-            bloodGroup = "A -";
+            updatedBloodGroup = "A -";
         }
 
         else if( itemId == R.id.itemBPos )
         {
-            bloodGroup = "B +";
+            updatedBloodGroup = "B +";
         }
 
         else if( itemId == R.id.itemBNeg )
         {
-            bloodGroup = "B -";
+            updatedBloodGroup = "B -";
         }
 
         else if( itemId == R.id.itemABPos )
         {
-            bloodGroup = "AB +";
+            updatedBloodGroup = "AB +";
         }
 
         else if( itemId == R.id.itemABNeg )
         {
-            bloodGroup = "AB -";
+            updatedBloodGroup = "AB -";
         }
 
         else if( itemId == R.id.itemOPos )
         {
-            bloodGroup = "O +";
+            updatedBloodGroup = "O +";
         }
 
         else if( itemId == R.id.itemONeg )
         {
-            bloodGroup = "O -";
+            updatedBloodGroup = "O -";
         }
 
         else
@@ -148,7 +222,7 @@ public class ProfileBloodGroupUpdator extends Profile implements View.OnClickLis
             return super.onContextItemSelected(menuItem);
         }
 
-        editTextNewBloodGroup.setText(bloodGroup);
+        editTextNewBloodGroup.setText(updatedBloodGroup);
         return true;
     }
 }
