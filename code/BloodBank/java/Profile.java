@@ -3,6 +3,7 @@ package com.example.root.home;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -71,6 +72,7 @@ public class Profile extends AppCompatActivity
         email = intent.getStringExtra("labelEmail");
         country = intent.getStringExtra("labelCountry");
         bloodGroup = intent.getStringExtra("labelBloodGroup");
+        Log.d("Saketh1", "Profile 1");
         isDonor = intent.getExtras().getBoolean("labelIsDonor");
     }
 
