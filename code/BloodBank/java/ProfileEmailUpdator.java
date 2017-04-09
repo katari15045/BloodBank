@@ -23,6 +23,7 @@ public class ProfileEmailUpdator extends Profile implements View.OnClickListener
     private DataBase dataBase;
     private String commandUpdateEmail;
     private String commandCountEmail;
+    private String commandUpdateEmailInExtraTable;
     private EditText editTextNewEmail;
 
     private View myView;
@@ -82,6 +83,7 @@ public class ProfileEmailUpdator extends Profile implements View.OnClickListener
             if( countEmails == 0 )
             {
                 dataBase.executeQuery( commandUpdateEmail, true );
+                dataBase.executeQuery( commandUpdateEmailInExtraTable, true );
                 email = updatedEmail;
                 toastMessage = "Email Updated!!!";
             }
@@ -102,6 +104,15 @@ public class ProfileEmailUpdator extends Profile implements View.OnClickListener
             stringBuilder.append("update user set email='").append(updatedEmail).append("' where username='")
                     .append(username).append("';");
             commandUpdateEmail = stringBuilder.toString();
+
+            tableDecider = new TableDecider(bloodGroup, isDonor);
+            tableDecider.decide();
+            tableToUpdate = tableDecider.getTable();
+
+            stringBuilder.setLength(0);
+            stringBuilder.append("update ").append(tableToUpdate).append(" set email='").append(updatedEmail).append("' where username='")
+                    .append(username).append("';");
+            commandUpdateEmailInExtraTable = stringBuilder.toString();
         }
 
     }
