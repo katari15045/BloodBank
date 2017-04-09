@@ -35,7 +35,6 @@ public class Signup extends AppCompatActivity
     private String country;
     private String bloodGroup;
     private boolean isDonor;
-    private boolean isPositive;
 
     private SignupValidator signupValidator;
 
@@ -86,13 +85,11 @@ public class Signup extends AppCompatActivity
     public boolean onContextItemSelected(MenuItem menuItem)
     {
         int itemId = menuItem.getItemId();
-        isPositive = false;
 
         if( itemId == R.id.itemAPos )
         {
             editTextBloodgroup.setText("A +");
             bloodGroup = "A +";
-            isPositive = true;
         }
 
         else if( itemId == R.id.itemANeg )
@@ -105,7 +102,6 @@ public class Signup extends AppCompatActivity
         {
             editTextBloodgroup.setText("B +");
             bloodGroup = "B +";
-            isPositive = true;
         }
 
         else if( itemId == R.id.itemBNeg )
@@ -118,7 +114,6 @@ public class Signup extends AppCompatActivity
         {
             editTextBloodgroup.setText("AB +");
             bloodGroup = "AB +";
-            isPositive = true;
         }
 
         else if( itemId == R.id.itemABNeg )
@@ -131,7 +126,6 @@ public class Signup extends AppCompatActivity
         {
             editTextBloodgroup.setText("O +");
             bloodGroup = "O +";
-            isPositive = true;
         }
 
         else if( itemId == R.id.itemONeg )
@@ -157,7 +151,7 @@ public class Signup extends AppCompatActivity
         public void onClick( View v )
         {
             getUserInput();
-            signupValidator = new SignupValidator(Signup.this, name, username, password, email, mobileNumber, country, bloodGroup, isDonor, isPositive );
+            signupValidator = new SignupValidator(Signup.this, name, username, password, email, mobileNumber, country, bloodGroup, isDonor);
             signupValidator.validate();
         }
 

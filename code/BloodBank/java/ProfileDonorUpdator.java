@@ -22,6 +22,9 @@ public class ProfileDonorUpdator extends Profile implements View.OnClickListener
 
     private View myView;
 
+    private ExtraTableCreatorCumInserter extraTableCreatorCumInserter;
+    private String commandDeleteIsDonorInExtraTable;
+
     public ProfileDonorUpdator(Context inpContext)
     {
         context = inpContext;
@@ -52,14 +55,29 @@ public class ProfileDonorUpdator extends Profile implements View.OnClickListener
     {
         private int checkedRadioButtonId;
         private RadioButton checkedRadioButton;
+        private boolean updatedIsDonor;
+        private String toastMessage;
 
         @Override
         public void onClick(DialogInterface dialog, int which)
         {
             dataBase = new DataBase(context);
             initializeCommand();
-            dataBase.executeQuery( commandUpdateIsDonor, true );
-            Toast.makeText(context, "Data Upadted!!!", Toast.LENGTH_SHORT).show();
+            toastMessage = "That's same as the old one!!!";
+
+            if( isDonor != updatedIsDonor )
+            {
+                dataBase.executeQuery( commandUpdateIsDonor, true );
+                dataBase.executeQuery( commandDeleteIsDonorInExtraTable, true );
+                extraTableCreatorCumInserter = new ExtraTableCreatorCumInserter(bloodGroup, updatedIsDonor, username, name, mobile, email, country, context);
+                extraTableCreatorCumInserter.start();
+                isDonor = updatedIsDonor;
+
+                toastMessage = "Data updated!!!";
+            }
+
+
+            Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show();
         }
 
         private void initializeCommand()
@@ -67,9 +85,20 @@ public class ProfileDonorUpdator extends Profile implements View.OnClickListener
             getUserInput();
 
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("update user set isDonor=").append(isDonor).append(" where username='")
+            stringBuilder.append("update user set isDonor=").append(updatedIsDonor).append(" where username='")
                     .append(username).append("';");
             commandUpdateIsDonor = stringBuilder.toString();
+
+            if( isDonor != updatedIsDonor )
+            {
+                tableDecider = new TableDecider(bloodGroup, isDonor);
+                tableDecider.decide();
+                tableToUpdate = tableDecider.getTable();
+
+                stringBuilder.setLength(0);
+                stringBuilder.append( "DELETE FROM " ).append(tableToUpdate).append(" WHERE username='").append(username).append("';");
+                commandDeleteIsDonorInExtraTable = stringBuilder.toString();
+            }
         }
 
         private void getUserInput()
@@ -79,13 +108,14 @@ public class ProfileDonorUpdator extends Profile implements View.OnClickListener
 
             if( checkedRadioButton.getText().toString().equals("Donor") )
             {
-                isDonor = true;
+                updatedIsDonor = true;
             }
 
             else
             {
-                isDonor = false;
+                updatedIsDonor = false;
             }
+
         }
     }
 
