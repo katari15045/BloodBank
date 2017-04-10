@@ -63,9 +63,9 @@ public class LoginValidator
 
         if( countPasswords == 1 )
         {
-            Intent intent = new Intent( context, Home.class );
-            intent.putExtra("labelUsername", username);
-            context.startActivity(intent);
+            ActivityLauncher activityLauncher = new ActivityLauncher();
+            activityLauncher.launch();
+
         }
     }
 
@@ -109,6 +109,90 @@ public class LoginValidator
         catch ( SQLException e)
         {
             e.printStackTrace();
+        }
+    }
+
+    private class ActivityLauncher
+    {
+        private String name;
+        private String mobileNumber;
+        private String emailId;
+        private String country;
+        private boolean isDonor;
+        private String bloodGroup;
+
+        private Intent intent;
+
+        protected void launch()
+        {
+            startHomeActivity();
+        }
+
+        private void startHomeActivity()
+        {
+            getUserInfo();
+
+            if(isDonor)
+            {
+                intent = new Intent( context, HomeDonor.class );
+            }
+
+            else
+            {
+                intent = new Intent( context, HomeRecipient.class );
+            }
+
+            fillIntent();
+            context.startActivity(intent);
+        }
+
+        private void fillIntent()
+        {
+            intent.putExtra("labelUsername", username);
+            intent.putExtra("labelPassword", password);
+            intent.putExtra("labelName", name);
+            intent.putExtra("labelMobile", mobileNumber);
+            intent.putExtra("labelEmail", emailId);
+            intent.putExtra("labelCountry", country);
+            intent.putExtra("labelIsDonor", isDonor);
+            intent.putExtra("labelBloodGroup", bloodGroup);
+        }
+
+        private void getUserInfo()
+        {
+            dataBase = new DataBase(context);
+            String command = getCommand();
+            dataBase.executeQuery( command, false );
+            resultSet = dataBase.getResultSet();
+            parseResultSet();
+        }
+
+        private String getCommand()
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+
+            stringBuilder.append("select * from user where username='").append(username).append("';");
+            return stringBuilder.toString();
+        }
+
+        private void parseResultSet()
+        {
+            try
+            {
+                ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+                resultSet.next();
+                name = resultSet.getString(1);
+                mobileNumber = resultSet.getString(4);
+                emailId = resultSet.getString(5);
+                country = resultSet.getString(6);
+                isDonor = resultSet.getBoolean(7);
+                bloodGroup = resultSet.getString(8);
+            }
+
+            catch(SQLException e)
+            {
+                e.printStackTrace();
+            }
         }
     }
 }
