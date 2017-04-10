@@ -99,7 +99,6 @@ public class HomeRecipient extends AppCompatActivity
     private void handleFindDonors()
     {
         donorFinder = new DonorFinder();
-        donorFinder.find(bloodGroup, isPositive, country, HomeRecipient.this);
-        textViewRecipient.setText( donorFinder.getResult() );
+        donorFinder.find(bloodGroup, isPositive, country, textViewRecipient, HomeRecipient.this);
     }
 }
