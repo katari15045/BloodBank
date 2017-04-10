@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
+import android.widget.TextView;
 
 /**
  * Created by root on 10/4/17.
@@ -16,6 +16,7 @@ import android.widget.Toast;
 public class HomeRecipient extends AppCompatActivity
 {
     private Intent intent;
+    private TextView textViewRecipient;
 
     private String name;
     private String username;
@@ -25,6 +26,7 @@ public class HomeRecipient extends AppCompatActivity
     private String country;
     private boolean isDonor;
     private String bloodGroup;
+    private boolean isPositive;
 
     private DonorFinder donorFinder;
 
@@ -34,7 +36,9 @@ public class HomeRecipient extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipient_home);
 
+        textViewRecipient = (TextView) findViewById(R.id.textViewRecipient);
         getDataFromActivity();
+
     }
 
     private void getDataFromActivity()
@@ -48,6 +52,10 @@ public class HomeRecipient extends AppCompatActivity
         country = intent.getStringExtra("labelCountry");
         isDonor = intent.getExtras().getBoolean("labelIsDonor");
         bloodGroup = intent.getStringExtra("labelBloodGroup");
+
+        IsPositiveDecider isPositiveDecider = new IsPositiveDecider();
+        isPositiveDecider.decide(bloodGroup);
+        isPositive = isPositiveDecider.getDecision();
     }
 
     @Override
@@ -91,6 +99,7 @@ public class HomeRecipient extends AppCompatActivity
     private void handleFindDonors()
     {
         donorFinder = new DonorFinder();
-        donorFinder.find(bloodGroup, country, HomeRecipient.this);
+        donorFinder.find(bloodGroup, isPositive, country, HomeRecipient.this);
+        textViewRecipient.setText( donorFinder.getResult() );
     }
 }
