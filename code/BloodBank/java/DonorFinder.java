@@ -24,6 +24,7 @@ public class DonorFinder
     private DataBase dataBase;
 
     private StringBuilder stringBuilder;
+    private String currentTable;
     private StringBuilder result;
 
     public void find(String inpBloodGroup, boolean inpIsPositive, String inpCountry, Context inpContext)
@@ -54,7 +55,8 @@ public class DonorFinder
 
         while( iterator.hasNext() )
         {
-            prepareCommandAndExecute( iterator.next() );
+            currentTable = iterator.next();
+            prepareCommandAndExecute(currentTable);
             getDataFromDatabase();
         }
     }
@@ -95,41 +97,17 @@ public class DonorFinder
     {
         try
         {
-            int cols = resultSetMetaData.getColumnCount();
-            int count;
-            String type;
-
             while( resultSet.next() )
             {
-                count = 1;
-
-
-                while( count <= cols )
-                {
-                    type = resultSetMetaData.getColumnTypeName(count);
-
-                    if( type.equals("VARCHAR") )
-                    {
-                        result.append( resultSet.getString(count) );
-                    }
-
-                    else if( type.equalsIgnoreCase("TINYINT") ) // BOOLEAN
-                    {
-                        result.append( resultSet.getBoolean(count) );
-                    }
-
-                    if( count != cols )
-                    {
-                        result.append(" -> ");
-                    }
-
-                    count = count + 1;
-                }
-
+                result.append( resultSet.getString(1) ).append(" -> ");
+                result.append( resultSet.getBoolean(2) ).append(" -> ");
+                result.append( resultSet.getString(3) ).append(" -> ");
+                result.append( resultSet.getString(4) ).append(" -> ");
+                result.append( resultSet.getString(5) ).append(" -> ");
+                result.append( resultSet.getString(6) );
                 result.append("\n");
                 result.append("\n");// Extra
             }
-
         }
 
         catch (SQLException e)
