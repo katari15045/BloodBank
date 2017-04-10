@@ -100,8 +100,8 @@ public class ProfileDonorUpdator extends Profile implements View.OnClickListener
 
             if( isDonor != updatedIsDonor )
             {
-                tableDecider = new TableDecider(bloodGroup, isDonor);
-                tableDecider.decide();
+                tableDecider = new TableDecider();
+                tableDecider.decide(bloodGroup, isDonor);
                 tableToUpdate = tableDecider.getTable();
 
                 stringBuilder.setLength(0);

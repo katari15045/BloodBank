@@ -26,6 +26,8 @@ public class HomeRecipient extends AppCompatActivity
     private boolean isDonor;
     private String bloodGroup;
 
+    private DonorFinder donorFinder;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
     {
@@ -88,6 +90,7 @@ public class HomeRecipient extends AppCompatActivity
 
     private void handleFindDonors()
     {
-        Toast.makeText( HomeRecipient.this, "Welcome Recipient!!!", Toast.LENGTH_SHORT ).show();
+        donorFinder = new DonorFinder();
+        donorFinder.find(bloodGroup, country, HomeRecipient.this);
     }
 }

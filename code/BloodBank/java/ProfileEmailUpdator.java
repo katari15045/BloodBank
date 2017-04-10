@@ -105,8 +105,8 @@ public class ProfileEmailUpdator extends Profile implements View.OnClickListener
                     .append(username).append("';");
             commandUpdateEmail = stringBuilder.toString();
 
-            tableDecider = new TableDecider(bloodGroup, isDonor);
-            tableDecider.decide();
+            tableDecider = new TableDecider();
+            tableDecider.decide(bloodGroup, isDonor);
             tableToUpdate = tableDecider.getTable();
 
             stringBuilder.setLength(0);

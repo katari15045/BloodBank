@@ -63,8 +63,8 @@ public class ProfileCountryUpdator extends Profile implements View.OnClickListen
                         .append(username).append("';");
                 commandUpdateCountry = stringBuilder.toString();
 
-                tableDecider = new TableDecider(bloodGroup, isDonor);
-                tableDecider.decide();
+                tableDecider = new TableDecider();
+                tableDecider.decide( bloodGroup, isDonor );
                 tableToUpdate = tableDecider.getTable();
 
                 stringBuilder.setLength(0);

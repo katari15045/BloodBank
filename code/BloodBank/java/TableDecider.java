@@ -11,14 +11,11 @@ public class TableDecider
     private String bloodGroup;
     private boolean isDonor;
 
-    public TableDecider(String inpBloodGroup, boolean inpIsdonor)
+    public void decide(String inpBloodGroup, boolean inpIsdonor)
     {
         bloodGroup = inpBloodGroup;
         isDonor = inpIsdonor;
-    }
 
-    public void decide()
-    {
         decideLHS();
         decideRHS();
     }

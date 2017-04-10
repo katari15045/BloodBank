@@ -104,8 +104,8 @@ public class ProfileMobileUpdator extends Profile implements View.OnClickListene
                     .append(username).append("';");
             commandUpdateMobile = stringBuilder.toString();
 
-            tableDecider = new TableDecider(bloodGroup, isDonor);
-            tableDecider.decide();
+            tableDecider = new TableDecider();
+            tableDecider.decide(bloodGroup, isDonor);
             tableToUpdate = tableDecider.getTable();
 
             stringBuilder.setLength(0);

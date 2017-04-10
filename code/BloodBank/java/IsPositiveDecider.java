@@ -9,13 +9,10 @@ public class IsPositiveDecider
     private String bloodGroup;
     private boolean isPositive;
 
-    public IsPositiveDecider( String inpBloodGroup )
+    public void decide(String inpBloodGroup)
     {
         bloodGroup = inpBloodGroup;
-    }
 
-    public void decide()
-    {
         if( bloodGroup.contains("+") )
         {
             isPositive = true;

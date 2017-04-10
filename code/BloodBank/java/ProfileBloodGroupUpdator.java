@@ -104,8 +104,8 @@ public class ProfileBloodGroupUpdator extends Profile implements View.OnClickLis
             StringBuilder stringBuilder = new StringBuilder();
             IsPositiveDecider isPositiveDecider;
 
-            isPositiveDecider = new IsPositiveDecider(updatedBloodGroup);
-            isPositiveDecider.decide();
+            isPositiveDecider = new IsPositiveDecider();
+            isPositiveDecider.decide(updatedBloodGroup);
             updatedIsPositive = isPositiveDecider.getDecision();
 
             stringBuilder.append("update user set bloodGroup='").append(updatedBloodGroup).append("' where username='")
@@ -126,12 +126,12 @@ public class ProfileBloodGroupUpdator extends Profile implements View.OnClickLis
         private boolean isItTheSameTable()
         {
             statusSameTable = false;
-            tableDecider = new TableDecider( bloodGroup, isDonor );
-            tableDecider.decide();
+            tableDecider = new TableDecider();
+            tableDecider.decide( bloodGroup, isDonor );
             oldTable = tableDecider.getTable();
 
-            tableDecider = new TableDecider( updatedBloodGroup, isDonor );
-            tableDecider.decide();
+            tableDecider = new TableDecider();
+            tableDecider.decide( updatedBloodGroup, isDonor );
             newTable = tableDecider.getTable();
 
             if( oldTable.equals(newTable) )

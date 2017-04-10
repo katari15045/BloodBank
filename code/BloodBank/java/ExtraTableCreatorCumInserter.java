@@ -45,8 +45,8 @@ public class ExtraTableCreatorCumInserter
 
     public void start()
     {
-        isPositiveDecider = new IsPositiveDecider(bloodGroup);
-        isPositiveDecider.decide();
+        isPositiveDecider = new IsPositiveDecider();
+        isPositiveDecider.decide(bloodGroup);
         isPositive = isPositiveDecider.getDecision();
 
         decideTable();
@@ -58,8 +58,8 @@ public class ExtraTableCreatorCumInserter
 
     private void decideTable()
     {
-        tableDecider = new TableDecider(bloodGroup, isDonor);
-        tableDecider.decide();
+        tableDecider = new TableDecider();
+        tableDecider.decide(bloodGroup, isDonor);
         targetTable = tableDecider.getTable();
     }
 

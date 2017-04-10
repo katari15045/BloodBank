@@ -97,8 +97,8 @@ public class ProfileUsernameUpdator extends Profile implements View.OnClickListe
                     .append(username).append("';");
             commandUpdateUsername = stringBuilder.toString();
 
-            tableDecider = new TableDecider(bloodGroup, isDonor);
-            tableDecider.decide();
+            tableDecider = new TableDecider();
+            tableDecider.decide(bloodGroup, isDonor);
             tableToUpdate = tableDecider.getTable();
 
             stringBuilder.setLength(0);
