@@ -31,7 +31,7 @@ public class MobileVerifier extends AppCompatActivity
     private AlertDialog alertDialog;
     private Button buttonSendOTP;
 
-    private MobileNumberCounter mobileNumberCounter;
+    private AttributeCounter mobileNumberCounter;
     private  MobileMessageSender mobileMessageSender;
     private String randomNumber;
 
@@ -141,8 +141,8 @@ public class MobileVerifier extends AppCompatActivity
 
             else
             {
-                mobileNumberCounter = new MobileNumberCounter(MobileVerifier.this);
-                countMobiles = mobileNumberCounter.getCount(mobile);
+                mobileNumberCounter = new AttributeCounter(MobileVerifier.this);
+                countMobiles = mobileNumberCounter.countMobiles(mobile);
 
                 if( countMobiles == 0 )
                 {

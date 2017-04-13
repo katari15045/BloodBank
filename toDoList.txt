@@ -4,3 +4,4 @@
 -> When OTP is resent multiple times user should be allowed to enter one among the received OTPs(Any one of the sent OTPs is valid)
 -> Progress dialog when connecting to MYSQL server
 -> When there is no internet connection, tell the user about it and oyur app should not crash
+-> When MYSQL server is turned off you should handle

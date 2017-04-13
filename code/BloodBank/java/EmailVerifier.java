@@ -1,24 +1,8 @@
 package com.example.root.home;
 
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.util.Properties;
-
-import javax.mail.Authenticator;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -26,7 +10,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.util.Properties;
 import java.util.Random;
 
 /**
@@ -37,13 +20,9 @@ public class EmailVerifier extends AppCompatActivity
 {
     private EditText editTextEmail;
     private Button buttonVerifyEmail;
-    private ProgressDialog progressDialog;
     private AlertDialog alertDialog;
 
-    private Session session;
     private String randomNumber;
-    private String commandCountEmail;
-    private String userVerificationCode;
 
     private String username;
     private String password;
@@ -53,6 +32,9 @@ public class EmailVerifier extends AppCompatActivity
     private String country;
     private String bloodGroup;
     private boolean isDonor;
+
+    private AttributeCounter attributeCounter;
+    private EmailSender emailSender;
 
     @Override
     public void onCreate(Bundle state)
@@ -85,25 +67,19 @@ public class EmailVerifier extends AppCompatActivity
 
     private class VerifyEmailListener implements View.OnClickListener
     {
-        Properties properties;
-        BackGroundThread backGroundThread;
-
         @Override
         public void onClick(View v)
         {
             email = editTextEmail.getText().toString();
             sendEmail();
-            progressDialog = ProgressDialog.show(EmailVerifier.this, "", "Sending Mail...", true);
-            backGroundThread = new BackGroundThread();
-            backGroundThread.execute();
             launchDialog();
         }
 
         private void sendEmail()
         {
             generateRandomNumber();
-            fillProperties();
-            startSession();
+            emailSender = new EmailSender(EmailVerifier.this);
+            emailSender.send(email, randomNumber);
         }
 
         private void launchDialog()
@@ -127,63 +103,8 @@ public class EmailVerifier extends AppCompatActivity
             number = random.nextInt( (max+1)-min ) + min;
             randomNumber = Integer.toString(number);
         }
-
-        private void fillProperties()
-        {
-            properties = new Properties();
-
-            properties.put("mail.smtp.host", "smtp.gmail.com");
-            properties.put("mail.smtp.socketFactory.port", "465");
-            properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-            properties.put("mail.smtp.auth", "true");
-            properties.put("mail.smtp.port", "465");
-        }
-
-        private void startSession()
-        {
-            session = Session.getDefaultInstance(properties, new Authenticator()
-            {
-                protected PasswordAuthentication getPasswordAuthentication()
-                {
-                    return new PasswordAuthentication("saketh9977.test@gmail.com", "test_password");
-                }
-            });
-        }
     }
 
-    private class BackGroundThread extends AsyncTask<String, Void, String>
-    {
-        private Message mimeMessage;
-
-        @Override
-        protected String doInBackground(String... parameters)
-        {
-            try
-            {
-                mimeMessage = new MimeMessage(session);
-                mimeMessage.setFrom( new InternetAddress("saketh9977.test@gmail.com") );
-                mimeMessage.setRecipients( Message.RecipientType.TO, InternetAddress.parse(email) );
-                mimeMessage.setSubject("Blood Bank Email Verification");
-                mimeMessage.setContent(randomNumber, "text/html; charset=utf-8");
-                Transport.send(mimeMessage);
-            }
-
-            catch(MessagingException e)
-            {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String parameter)
-        {
-            progressDialog.dismiss();
-            Toast.makeText(EmailVerifier.this, "Email sent!!!", Toast.LENGTH_SHORT).show();
-        }
-
-    }
 
     private class AlertDialogPosButListener implements DialogInterface.OnClickListener
     {
@@ -204,7 +125,9 @@ public class EmailVerifier extends AppCompatActivity
 
             else
             {
-                if( countEmails() == 0 )
+                attributeCounter = new AttributeCounter(EmailVerifier.this);
+
+                if( attributeCounter.countEmails(email) == 0 )
                 {
                     Toast.makeText(EmailVerifier.this, "Email Verified!!!", Toast.LENGTH_SHORT).show();
                     startNextActivity();
@@ -216,37 +139,6 @@ public class EmailVerifier extends AppCompatActivity
                     return;
                 }
             }
-        }
-
-        private int countEmails()
-        {
-            DataBase dataBase = new DataBase(EmailVerifier.this);
-            ResultSet resultSet;
-            ResultSetMetaData resultSetMetaData;
-            initializeCommands();
-
-            try
-            {
-                dataBase.executeQuery(commandCountEmail, false);
-                resultSet = dataBase.getResultSet();
-                resultSetMetaData = resultSet.getMetaData();
-                resultSet.next();
-                return resultSet.getInt(1);
-            }
-
-            catch(SQLException e)
-            {
-                e.printStackTrace();
-            }
-
-            return -1;
-        }
-
-        private void initializeCommands()
-        {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("select count(*) from user where email='").append(email).append("';");
-            commandCountEmail = stringBuilder.toString();
         }
 
         private void startNextActivity()
