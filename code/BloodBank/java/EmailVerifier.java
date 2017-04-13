@@ -1,5 +1,8 @@
 package com.example.root.home;
 
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.util.Properties;
 
 import javax.mail.Authenticator;
@@ -39,6 +42,7 @@ public class EmailVerifier extends AppCompatActivity
 
     private Session session;
     private String randomNumber;
+    private String commandCountEmail;
     private String userVerificationCode;
 
     private String username;
@@ -159,7 +163,7 @@ public class EmailVerifier extends AppCompatActivity
                 mimeMessage = new MimeMessage(session);
                 mimeMessage.setFrom( new InternetAddress("saketh9977.test@gmail.com") );
                 mimeMessage.setRecipients( Message.RecipientType.TO, InternetAddress.parse(email) );
-                mimeMessage.setSubject("Blood Bank EmailVerification");
+                mimeMessage.setSubject("Blood Bank Email Verification");
                 mimeMessage.setContent(randomNumber, "text/html; charset=utf-8");
                 Transport.send(mimeMessage);
             }
@@ -200,9 +204,49 @@ public class EmailVerifier extends AppCompatActivity
 
             else
             {
-                Toast.makeText(EmailVerifier.this, "Email Verified!!!", Toast.LENGTH_SHORT).show();
-                startNextActivity();
+                if( countEmails() == 0 )
+                {
+                    Toast.makeText(EmailVerifier.this, "Email Verified!!!", Toast.LENGTH_SHORT).show();
+                    startNextActivity();
+                }
+
+                else
+                {
+                    Toast.makeText(EmailVerifier.this, "Email already registered!!!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
             }
+        }
+
+        private int countEmails()
+        {
+            DataBase dataBase = new DataBase(EmailVerifier.this);
+            ResultSet resultSet;
+            ResultSetMetaData resultSetMetaData;
+            initializeCommands();
+
+            try
+            {
+                dataBase.executeQuery(commandCountEmail, false);
+                resultSet = dataBase.getResultSet();
+                resultSetMetaData = resultSet.getMetaData();
+                resultSet.next();
+                return resultSet.getInt(1);
+            }
+
+            catch(SQLException e)
+            {
+                e.printStackTrace();
+            }
+
+            return -1;
+        }
+
+        private void initializeCommands()
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("select count(*) from user where email='").append(email).append("';");
+            commandCountEmail = stringBuilder.toString();
         }
 
         private void startNextActivity()

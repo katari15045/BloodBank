@@ -199,7 +199,7 @@ public class MobileVerifier extends AppCompatActivity
         {
             if( getResultCode() == Activity.RESULT_OK )
             {
-                //Toast.makeText(MobileVerifier.this, acknowledgeDelivered, Toast.LENGTH_SHORT ).show();
+                Toast.makeText(MobileVerifier.this, acknowledgeDelivered, Toast.LENGTH_SHORT ).show();
                 isItDelivered = true;
             }
 
