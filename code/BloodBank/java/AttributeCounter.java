@@ -11,8 +11,10 @@ import java.sql.SQLException;
 
 public class AttributeCounter
 {
+    private String username;
     private String mobile;
     private String email;
+    private String commandCountUsernames;
     private String commandCountMobiles;
     private String commandCountEmail;
 
@@ -26,6 +28,16 @@ public class AttributeCounter
     public AttributeCounter(Context inpContext)
     {
         context = inpContext;
+    }
+
+    public int countUsernames(String inpUsername)
+    {
+        username = inpUsername;
+        initializeCommands();
+        currentCommand = commandCountUsernames;
+        countAttributes();
+
+        return currentCount;
     }
 
     public int countMobiles(String inpMobile)
@@ -52,6 +64,10 @@ public class AttributeCounter
     {
         StringBuilder stringBuilder = new StringBuilder();
 
+        stringBuilder.append("select count(*) from user where username='").append(username).append("';");
+        commandCountUsernames = stringBuilder.toString();
+
+        stringBuilder.setLength(0);
         stringBuilder.append("select count(*) from user where mobileNumber='").append(mobile).append("';");
         commandCountMobiles = stringBuilder.toString();
 

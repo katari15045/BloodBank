@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 public class Signup extends AppCompatActivity
 {
@@ -32,8 +33,6 @@ public class Signup extends AppCompatActivity
     private String country;
     private String bloodGroup;
     private boolean isDonor;
-
-    private SignupValidator signupValidator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -141,16 +140,21 @@ public class Signup extends AppCompatActivity
     {
         private int checkedRadioButtonId;
         private RadioButton checkedRadioButton;
-
+        private AttributeCounter attributeCounter;
 
         public void onClick( View v )
         {
             getUserInput();
-            signupValidator = new SignupValidator(Signup.this, name, username, password, country, bloodGroup, isDonor);
+            attributeCounter = new AttributeCounter(Signup.this);
 
-            if( signupValidator.validate() )
+            if( attributeCounter.countUsernames(username) == 0 )
             {
                 startMobileVerifierActivity();
+            }
+
+            else
+            {
+                Toast.makeText(Signup.this, "Username already exists!!!", Toast.LENGTH_SHORT).show();
             }
         }
 
