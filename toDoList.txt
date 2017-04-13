@@ -1,6 +1,5 @@
--> verify that mobile number and email are not already present in database during signup
 -> Store Data after email validation during signup
--> while updating mobile or email validate new mobile or email
+-> while updating mobile or email in profile, validate new mobile or email.
 -> Either mobile or email is sufficient. Make user to fill either of them.
 -> When OTP is resent multiple times user should be allowed to enter one among the received OTPs(Any one of the sent OTPs is valid)
 -> Progress dialog when connecting to MYSQL server

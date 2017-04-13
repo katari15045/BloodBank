@@ -1,25 +1,16 @@
 package com.example.root.home;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.telephony.SmsManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
 import java.util.Random;
 
 /**
@@ -39,10 +30,10 @@ public class MobileVerifier extends AppCompatActivity
     private EditText editTextMobile;
     private AlertDialog alertDialog;
     private Button buttonSendOTP;
-    private boolean isItDelivered;
-    private String randomNumber;
 
-    private String commandCountMobileNumber;
+    private MobileNumberCounter mobileNumberCounter;
+    private  MobileMessageSender mobileMessageSender;
+    private String randomNumber;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -75,17 +66,10 @@ public class MobileVerifier extends AppCompatActivity
 
     private class MyListener implements View.OnClickListener
     {
-        private String acknowledgeSent;
-        private String acknowledgeDelivered;
-
-        PendingIntent pendingIntentSent;
-        PendingIntent pendingIntentDelivered;
-
         @Override
         public void onClick(View v)
         {
             mobile = editTextMobile.getText().toString();
-            isItDelivered = false;
             sendOTP();
             launchDialog();
         }
@@ -101,32 +85,11 @@ public class MobileVerifier extends AppCompatActivity
             randomNumber = Integer.toString(number);
         }
 
-        private void initializeAcknowledgementMessages()
-        {
-            acknowledgeSent = "OTP Sent!!!";
-            acknowledgeDelivered = "OTP Delivered";
-        }
-
-        private void initializePendingIntents()
-        {
-            pendingIntentSent = PendingIntent.getBroadcast(MobileVerifier.this, 0, new Intent(acknowledgeSent), 0);
-            pendingIntentDelivered = PendingIntent.getBroadcast(MobileVerifier.this, 0, new Intent(acknowledgeDelivered), 0);
-        }
-
-        private void registerReceivers()
-        {
-            registerReceiver( new MyBroadcastReceiverSent(acknowledgeSent), new IntentFilter(acknowledgeSent) );
-            registerReceiver( new MyBroadcastReceiverDelivered(acknowledgeDelivered), new IntentFilter(acknowledgeDelivered) );
-        }
-
         private void sendOTP()
         {
             generateRandomNumber();
-            initializeAcknowledgementMessages();
-            initializePendingIntents();
-            registerReceivers();
-            SmsManager smsManager = SmsManager.getDefault();
-            smsManager.sendTextMessage( mobile, null, randomNumber, pendingIntentSent, pendingIntentDelivered );
+            mobileMessageSender = new MobileMessageSender(MobileVerifier.this);
+            mobileMessageSender.sendMessage(mobile, randomNumber);
         }
 
         private void launchDialog()
@@ -156,64 +119,12 @@ public class MobileVerifier extends AppCompatActivity
         startActivity(intent);
     }
 
-    private class MyBroadcastReceiverSent extends BroadcastReceiver
-    {
-        private String acknowledgeSent;
-
-        public MyBroadcastReceiverSent(String inpStr)
-        {
-            acknowledgeSent = inpStr;
-        }
-
-        @Override
-        public void onReceive(Context context, Intent intent)
-        {
-            if( getResultCode() == Activity.RESULT_OK )
-            {
-                //Toast.makeText(MobileVerifier.this, acknowledgeSent, Toast.LENGTH_SHORT ).show();
-            }
-
-            else if( getResultCode() == SmsManager.RESULT_ERROR_GENERIC_FAILURE )
-            {
-                //Toast.makeText(MobileVerifier.this, "Generic Failure.", Toast.LENGTH_SHORT ).show();
-            }
-
-            else if( getResultCode() == SmsManager.RESULT_ERROR_NO_SERVICE )
-            {
-                //Toast.makeText(MobileVerifier.this, "No Service.", Toast.LENGTH_SHORT ).show();
-            }
-        }
-    }
-
-    private class MyBroadcastReceiverDelivered extends BroadcastReceiver
-    {
-        private String acknowledgeDelivered;
-
-        public MyBroadcastReceiverDelivered(String inpStr)
-        {
-            acknowledgeDelivered = inpStr;
-        }
-
-        @Override
-        public void onReceive(Context context, Intent intent)
-        {
-            if( getResultCode() == Activity.RESULT_OK )
-            {
-                Toast.makeText(MobileVerifier.this, acknowledgeDelivered, Toast.LENGTH_SHORT ).show();
-                isItDelivered = true;
-            }
-
-            else if( getResultCode() == Activity.RESULT_CANCELED )
-            {
-                //Toast.makeText(MobileVerifier.this, "OTP not delivered.", Toast.LENGTH_SHORT ).show();
-            }
-        }
-    }
 
     private class AlertDialogPosButListener implements DialogInterface.OnClickListener
     {
         private EditText editTextUserOTP;
         private String userOTP;
+        private int countMobiles;
 
         @Override
         public void onClick(DialogInterface dialog, int which)
@@ -230,7 +141,10 @@ public class MobileVerifier extends AppCompatActivity
 
             else
             {
-                if( countMobiles() == 0 )
+                mobileNumberCounter = new MobileNumberCounter(MobileVerifier.this);
+                countMobiles = mobileNumberCounter.getCount(mobile);
+
+                if( countMobiles == 0 )
                 {
                     Toast.makeText(MobileVerifier.this, "Mobile number Verified!!!", Toast.LENGTH_SHORT).show();
                     startEmailVerifier();
@@ -244,38 +158,6 @@ public class MobileVerifier extends AppCompatActivity
             }
         }
 
-        private int countMobiles()
-        {
-            DataBase dataBase = new DataBase(MobileVerifier.this);
-            ResultSet resultSet;
-            ResultSetMetaData resultSetMetaData;
-            initializeCommand();
-            dataBase.executeQuery(commandCountMobileNumber, false);
-            resultSet = dataBase.getResultSet();
-
-            try
-            {
-                resultSetMetaData = resultSet.getMetaData();
-                resultSet.next();
-
-                return resultSet.getInt(1);
-            }
-
-            catch( SQLException e)
-            {
-                e.printStackTrace();
-            }
-
-            return -1;
-        }
-
-        private void initializeCommand()
-        {
-            StringBuilder stringBuilder = new StringBuilder();
-
-            stringBuilder.append("select count(*) from user where mobileNumber='").append(mobile).append("';");
-            commandCountMobileNumber = stringBuilder.toString();
-        }
     }
 
     private class AlertDialogNegButListener implements DialogInterface.OnClickListener
