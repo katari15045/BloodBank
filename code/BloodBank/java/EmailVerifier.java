@@ -36,6 +36,9 @@ public class EmailVerifier extends AppCompatActivity
     private AttributeCounter attributeCounter;
     private EmailSender emailSender;
 
+    private String commandCreateUserTable;
+    private String commandInsertIntoUser;
+
     @Override
     public void onCreate(Bundle state)
     {
@@ -130,6 +133,7 @@ public class EmailVerifier extends AppCompatActivity
                 if( attributeCounter.countEmails(email) == 0 )
                 {
                     Toast.makeText(EmailVerifier.this, "Email Verified!!!", Toast.LENGTH_SHORT).show();
+                    storeData();
                     startNextActivity();
                 }
 
@@ -140,6 +144,30 @@ public class EmailVerifier extends AppCompatActivity
                 }
             }
         }
+
+        private void storeData()
+        {
+            DataBase dataBase = new DataBase(EmailVerifier.this);
+            ExtraTableCreatorCumInserter extraTableCreatorCumInserter = new ExtraTableCreatorCumInserter(bloodGroup, isDonor, username,
+                    name, mobile, email, country, EmailVerifier.this);
+
+            initializeCommands();
+            dataBase.executeQuery(commandCreateUserTable, true);
+            dataBase.executeQuery(commandInsertIntoUser, true);
+            extraTableCreatorCumInserter.start();
+
+        }
+
+        private void initializeCommands()
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            commandCreateUserTable = "CREATE TABLE IF NOT EXISTS user(name VARCHAR(100) NOT NULL, username VARCHAR(100), password VARCHAR(100) NOT NULL, mobileNumber VARCHAR(20) NOT NULL, email VARCHAR(100) NOT NULL, country VARCHAR(50) NOT NULL, isDonor BOOL NOT NULL, bloodGroup VARCHAR(5) NOT NULL, PRIMARY KEY(username) );";
+
+            stringBuilder.append("INSERT INTO user VALUES('").append(name).append("','").append(username).append("','").append(password).append("','").append(mobile)
+                                .append("','").append(email).append("','").append(country).append("',").append(isDonor).append(",'").append(bloodGroup).append("');");
+            commandInsertIntoUser = stringBuilder.toString();
+        }
+
 
         private void startNextActivity()
         {
