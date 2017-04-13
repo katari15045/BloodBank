@@ -33,6 +33,7 @@ public class MobileVerifier extends AppCompatActivity
 
     private AttributeCounter mobileNumberCounter;
     private  MobileMessageSender mobileMessageSender;
+    private int countMobiles;
     private String randomNumber;
 
     @Override
@@ -70,8 +71,22 @@ public class MobileVerifier extends AppCompatActivity
         public void onClick(View v)
         {
             mobile = editTextMobile.getText().toString();
+            countMobiles();
+
+            if( countMobiles != 0 )
+            {
+                Toast.makeText(MobileVerifier.this, "Mobile number already registered!!!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             sendOTP();
             launchDialog();
+        }
+
+        private void countMobiles()
+        {
+            mobileNumberCounter = new AttributeCounter(MobileVerifier.this);
+            countMobiles = mobileNumberCounter.countMobiles(mobile);
         }
 
         private void generateRandomNumber()
@@ -124,7 +139,6 @@ public class MobileVerifier extends AppCompatActivity
     {
         private EditText editTextUserOTP;
         private String userOTP;
-        private int countMobiles;
 
         @Override
         public void onClick(DialogInterface dialog, int which)
@@ -141,20 +155,8 @@ public class MobileVerifier extends AppCompatActivity
 
             else
             {
-                mobileNumberCounter = new AttributeCounter(MobileVerifier.this);
-                countMobiles = mobileNumberCounter.countMobiles(mobile);
-
-                if( countMobiles == 0 )
-                {
-                    Toast.makeText(MobileVerifier.this, "Mobile number Verified!!!", Toast.LENGTH_SHORT).show();
-                    startEmailVerifier();
-                }
-
-                else
-                {
-                    Toast.makeText(MobileVerifier.this, "Mobile number already registered!!!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+                Toast.makeText(MobileVerifier.this, "Mobile number Verified!!!", Toast.LENGTH_SHORT).show();
+                startEmailVerifier();
             }
         }
 

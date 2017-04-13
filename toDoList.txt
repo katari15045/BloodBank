@@ -1,5 +1,6 @@
--> Store Data after email validation during signup
+-> During mobile and email verification, first do count and if it's 0 then do verification
 -> while updating mobile or email in profile, validate new mobile or email.
+-> Validate mobile(10 digits) and email(@gmail.com)
 -> Either mobile or email is sufficient. Make user to fill either of them.
 -> When OTP is resent multiple times user should be allowed to enter one among the received OTPs(Any one of the sent OTPs is valid)
 -> Progress dialog when connecting to MYSQL server
