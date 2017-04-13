@@ -4,6 +4,7 @@ package com.example.root.home;
  * Created by root on 28/3/17.
  */
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -20,8 +21,6 @@ public class Signup extends AppCompatActivity
     private EditText editTextName;
     private EditText editTextUsername;
     private EditText editTextPassword;
-    private EditText editTextEmail;
-    private EditText editTextMobileNumber;
     private EditText editTextCountry;
     private EditText editTextBloodgroup;
     private RadioGroup radioGroup;
@@ -30,8 +29,6 @@ public class Signup extends AppCompatActivity
     private String name;
     private String username;
     private String password;
-    private String email;
-    private String mobileNumber;
     private String country;
     private String bloodGroup;
     private boolean isDonor;
@@ -64,8 +61,6 @@ public class Signup extends AppCompatActivity
         editTextName = (EditText) findViewById(R.id.editTextName);
         editTextUsername = (EditText) findViewById(R.id.editTextUserName);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
-        editTextEmail = (EditText) findViewById(R.id.editTextEmail);
-        editTextMobileNumber = (EditText) findViewById(R.id.editTextMobile);
         editTextCountry = (EditText) findViewById(R.id.editTextCountry);
         editTextBloodgroup = (EditText) findViewById(R.id.editTextBloodGroup);
 
@@ -151,8 +146,12 @@ public class Signup extends AppCompatActivity
         public void onClick( View v )
         {
             getUserInput();
-            signupValidator = new SignupValidator(Signup.this, name, username, password, email, mobileNumber, country, bloodGroup, isDonor);
-            signupValidator.validate();
+            signupValidator = new SignupValidator(Signup.this, name, username, password, country, bloodGroup, isDonor);
+
+            if( signupValidator.validate() )
+            {
+                startMobileVerifierActivity();
+            }
         }
 
         private void getUserInput()
@@ -160,8 +159,6 @@ public class Signup extends AppCompatActivity
             name = editTextName.getText().toString();
             username = editTextUsername.getText().toString();
             password = editTextPassword.getText().toString();
-            email = editTextEmail.getText().toString();
-            mobileNumber = editTextMobileNumber.getText().toString();
             country = editTextCountry.getText().toString();
 
             checkedRadioButtonId = radioGroup.getCheckedRadioButtonId();
@@ -176,6 +173,18 @@ public class Signup extends AppCompatActivity
             {
                 isDonor = false;
             }
+        }
+
+        private void startMobileVerifierActivity()
+        {
+            Intent intent = new Intent(Signup.this, MobileVerifier.class);
+            intent.putExtra("labelUsername", username);
+            intent.putExtra("labelPassword", password);
+            intent.putExtra("labelName", name);
+            intent.putExtra("labelCountry", country);
+            intent.putExtra("labelBloodGroup", bloodGroup);
+            intent.putExtra("labelIsDonor", isDonor);
+            startActivity(intent);
         }
     }
 }

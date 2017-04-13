@@ -49,6 +49,6 @@ public class Startup extends AppCompatActivity
     private void initializeViews()
     {
         buttonSignup = (Button) findViewById(R.id.buttonSignup);
-        buttonSignin = (Button) findViewById(R.id.buttonSignin);
+        buttonSignin = (Button) findViewById(R.id.buttonLogin);
     }
 }
