@@ -17,6 +17,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.util.Random;
 
 /**
@@ -38,6 +41,8 @@ public class MobileVerifier extends AppCompatActivity
     private Button buttonSendOTP;
     private boolean isItDelivered;
     private String randomNumber;
+
+    private String commandCountMobileNumber;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -220,13 +225,56 @@ public class MobileVerifier extends AppCompatActivity
             {
                 Toast.makeText(MobileVerifier.this, "Invalid OTP!!!", Toast.LENGTH_SHORT).show();
                 buttonSendOTP.setText("Resend OTP");
+                return;
             }
 
             else
             {
-                Toast.makeText(MobileVerifier.this, "Mobile Verified!!!", Toast.LENGTH_SHORT).show();
-                startEmailVerifier();
+                if( countMobiles() == 0 )
+                {
+                    Toast.makeText(MobileVerifier.this, "Mobile number Verified!!!", Toast.LENGTH_SHORT).show();
+                    startEmailVerifier();
+                }
+
+                else
+                {
+                    Toast.makeText(MobileVerifier.this, "Mobile number already registered!!!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
             }
+        }
+
+        private int countMobiles()
+        {
+            DataBase dataBase = new DataBase(MobileVerifier.this);
+            ResultSet resultSet;
+            ResultSetMetaData resultSetMetaData;
+            initializeCommand();
+            dataBase.executeQuery(commandCountMobileNumber, false);
+            resultSet = dataBase.getResultSet();
+
+            try
+            {
+                resultSetMetaData = resultSet.getMetaData();
+                resultSet.next();
+
+                return resultSet.getInt(1);
+            }
+
+            catch( SQLException e)
+            {
+                e.printStackTrace();
+            }
+
+            return -1;
+        }
+
+        private void initializeCommand()
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+
+            stringBuilder.append("select count(*) from user where mobileNumber='").append(mobile).append("';");
+            commandCountMobileNumber = stringBuilder.toString();
         }
     }
 
