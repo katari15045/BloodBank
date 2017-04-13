@@ -31,4 +31,7 @@ dependencies {
     compile 'com.android.support:design:25.0.0'
 
     compile files('libs/mysql-connector-java-5.1.29.jar')
+
+    compile 'com.sun.mail:android-mail:1.5.5'
+    compile 'com.sun.mail:android-activation:1.5.5'
 }

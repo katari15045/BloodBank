@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.SmsManager;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -130,7 +129,7 @@ public class MobileVerifier extends AppCompatActivity
             AlertDialog.Builder builder = new AlertDialog.Builder(MobileVerifier.this);
             builder.setPositiveButton("Validate", new AlertDialogPosButListener());
             builder.setNegativeButton("Resend", new AlertDialogNegButListener());
-            builder.setView(R.layout.otp_validation);
+            builder.setView(R.layout.mobile_otp_validation);
             builder.setCancelable(false);
             alertDialog = builder.create();
             alertDialog.show();

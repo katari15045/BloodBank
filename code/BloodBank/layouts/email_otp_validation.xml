@@ -2,13 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:gravity="center"
-    android:layout_gravity="center"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="A verification code has been sent to your email."
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        />
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         >
@@ -16,20 +25,11 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/editTextEmail"
-            android:hint="Email ID"
-            android:inputType="textEmailAddress"
+            android:id="@+id/editTextVerificationCode"
+            android:hint="Verification Code"
+            android:inputType="number"
             />
 
     </android.support.design.widget.TextInputLayout>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/buttonVerifyEmail"
-        android:layout_marginTop="40dp"
-        android:text="Verify"
-        android:textAllCaps="false"
-        />
 
 </LinearLayout>
