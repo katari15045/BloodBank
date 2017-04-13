@@ -23,6 +23,7 @@ public class EmailVerifier extends AppCompatActivity
     private AlertDialog alertDialog;
 
     private String randomNumber;
+    private int countEmails;
 
     private String username;
     private String password;
@@ -32,9 +33,6 @@ public class EmailVerifier extends AppCompatActivity
     private String country;
     private String bloodGroup;
     private boolean isDonor;
-
-    private AttributeCounter attributeCounter;
-    private EmailSender emailSender;
 
     private String commandCreateUserTable;
     private String commandInsertIntoUser;
@@ -70,12 +68,29 @@ public class EmailVerifier extends AppCompatActivity
 
     private class VerifyEmailListener implements View.OnClickListener
     {
+        private AttributeCounter attributeCounter;
+        private EmailSender emailSender;
+
         @Override
         public void onClick(View v)
         {
             email = editTextEmail.getText().toString();
+            countEmails();
+
+            if( countEmails != 0 )
+            {
+                Toast.makeText(EmailVerifier.this, "Email already registered!!!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             sendEmail();
             launchDialog();
+        }
+
+        private void countEmails()
+        {
+            attributeCounter = new AttributeCounter(EmailVerifier.this);
+            countEmails = attributeCounter.countEmails(email);
         }
 
         private void sendEmail()
@@ -128,20 +143,9 @@ public class EmailVerifier extends AppCompatActivity
 
             else
             {
-                attributeCounter = new AttributeCounter(EmailVerifier.this);
-
-                if( attributeCounter.countEmails(email) == 0 )
-                {
-                    Toast.makeText(EmailVerifier.this, "Email Verified!!!", Toast.LENGTH_SHORT).show();
-                    storeData();
-                    startNextActivity();
-                }
-
-                else
-                {
-                    Toast.makeText(EmailVerifier.this, "Email already registered!!!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+                Toast.makeText(EmailVerifier.this, "Email Verified!!!", Toast.LENGTH_SHORT).show();
+                storeData();
+                startNextActivity();
             }
         }
 
