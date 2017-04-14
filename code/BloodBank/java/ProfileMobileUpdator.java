@@ -8,10 +8,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-
 /**
  * Created by root on 3/4/17.
  */
@@ -21,9 +17,7 @@ public class ProfileMobileUpdator extends Profile implements View.OnClickListene
     private Context context;
     private DataBase dataBase;
     private String commandUpdateMobile;
-    private String commandCountMobile;
     private String commandUpdateMobileInExtraTable;
-    private EditText editTextNewMobile;
 
     private View myView;
 
@@ -49,9 +43,9 @@ public class ProfileMobileUpdator extends Profile implements View.OnClickListene
 
     private class MyListener implements DialogInterface.OnClickListener
     {
+        private EditText editTextNewMobile;
         private String updatedMobile;
-        private ResultSet resultSet;
-        private ResultSetMetaData resultSetMetaData;
+        private AttributeCounter attributeCounter;
         private int countMobiles;
 
         private String toastMessage;
@@ -60,46 +54,26 @@ public class ProfileMobileUpdator extends Profile implements View.OnClickListene
         public void onClick(DialogInterface dialog, int which)
         {
             dataBase = new DataBase(context);
-            initializeCommand();
-
-            try
-            {
-                dataBase.executeQuery( commandCountMobile, false );
-                resultSet = dataBase.getResultSet();
-                resultSetMetaData = resultSet.getMetaData();
-                resultSet.next();
-                countMobiles = resultSet.getInt(1);
-
-            }
-
-            catch (SQLException e)
-            {
-                e.printStackTrace();
-            }
+            attributeCounter = new AttributeCounter(ProfileMobileUpdator.this);
+            initializeCommands();
+            countMobiles = attributeCounter.countMobiles(updatedMobile);
 
             toastMessage = "Mobile Number already Exists!!!";
 
             if( countMobiles == 0 )
             {
-                dataBase.executeQuery( commandUpdateMobile, true );
-                dataBase.executeQuery( commandUpdateMobileInExtraTable, true );
-                mobile = updatedMobile;
-                toastMessage = "Mobile Number Updated!!!";
+                updateMobile();
             }
 
             Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show();
         }
 
-        private void initializeCommand()
+        private void initializeCommands()
         {
             StringBuilder stringBuilder = new StringBuilder();
             editTextNewMobile = (EditText) myView.findViewById(R.id.editTextEditMobile);
             updatedMobile = editTextNewMobile.getText().toString();
 
-            stringBuilder.append("select count(*) from user where mobileNumber='").append(updatedMobile).append("';");
-            commandCountMobile = stringBuilder.toString();
-
-            stringBuilder.setLength(0);
             stringBuilder.append("update user set mobileNumber='").append(updatedMobile).append("' where username='")
                     .append(username).append("';");
             commandUpdateMobile = stringBuilder.toString();
@@ -112,6 +86,14 @@ public class ProfileMobileUpdator extends Profile implements View.OnClickListene
             stringBuilder.append("update ").append(tableToUpdate).append(" set mobileNumber='").append(updatedMobile).append("' where username='")
                     .append(username).append("';");
             commandUpdateMobileInExtraTable = stringBuilder.toString();
+        }
+
+        private void updateMobile()
+        {
+            dataBase.executeQuery( commandUpdateMobile, true );
+            dataBase.executeQuery( commandUpdateMobileInExtraTable, true );
+            mobile = updatedMobile;
+            toastMessage = "Mobile Number Updated!!!";
         }
     }
 
