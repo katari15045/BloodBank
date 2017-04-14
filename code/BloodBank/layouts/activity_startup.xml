@@ -1,36 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
-    tools:context="com.example.root.home.Startup">
+    >
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/buttonSignup"
-        android:text="Sign up"
-        android:textAllCaps="false"
-        android:background="@drawable/button"
-        android:textColor="@color/white"
-        android:paddingLeft="30dp"
-        android:paddingRight="30dp"
-        />
+    <LinearLayout
+        android:id="@+id/activity_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_gravity="center"
+        tools:context="com.example.root.home.Startup"
+        >
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/buttonLogin"
-        android:text="Login"
-        android:textAllCaps="false"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/button"
-        android:textColor="@color/white"
-        android:paddingLeft="30dp"
-        android:paddingRight="30dp"
-        />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            >
 
-</LinearLayout>
+            <ImageView
+                android:layout_width="90dp"
+                android:layout_height="150dp"
+                android:src="@drawable/blood_drop"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Blood Bank"
+                android:textAllCaps="false"
+                android:textSize="30dp"
+                android:textColor="@color/blood"
+                android:textStyle="bold"
+                />
+
+
+        </LinearLayout>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/buttonSignup"
+            android:text="Sign up"
+            android:textAllCaps="false"
+            android:background="@drawable/button"
+            android:textColor="@color/white"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:layout_marginTop="60dp"
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/buttonLogin"
+            android:text="Login"
+            android:textAllCaps="false"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/button"
+            android:textColor="@color/white"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            />
+
+    </LinearLayout>
+
+
+</ScrollView>
