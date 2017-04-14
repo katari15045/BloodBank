@@ -13,24 +13,24 @@ import android.widget.Toast;
  * Created by root on 13/4/17.
  */
 
-public class MobileMessageSender
+class MobileMessageSender
 {
     private Context context;
-    private String mobile;
-    private String message;
-
     private boolean isItSent;
 
-    PendingIntent pendingIntentSent;
-    PendingIntent pendingIntentDelivered;
+    private PendingIntent pendingIntentSent;
+    private PendingIntent pendingIntentDelivered;
 
-    public MobileMessageSender(Context inpContext)
+    MobileMessageSender(Context inpContext)
     {
         context = inpContext;
     }
 
-    public boolean sendMessage(String inpMobile, String inpMessage)
+    boolean sendMessage(String inpMobile, String inpMessage)
     {
+        String mobile;
+        String message;
+
         mobile = inpMobile;
         message = inpMessage;
         isItSent = false;

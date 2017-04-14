@@ -106,7 +106,7 @@ public class EmailVerifier extends AppCompatActivity
             builder.setPositiveButton("Validate", new AlertDialogPosButListener());
             builder.setNegativeButton("Resend", new AlertDialogNegButListener());
             builder.setView(R.layout.email_otp_validation);
-            builder.setCancelable(false);
+            builder.setCancelable(true);
             alertDialog = builder.create();
             alertDialog.show();
         }

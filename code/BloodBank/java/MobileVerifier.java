@@ -31,8 +31,6 @@ public class MobileVerifier extends AppCompatActivity
     private AlertDialog alertDialog;
     private Button buttonSendOTP;
 
-    private AttributeCounter mobileNumberCounter;
-    private  MobileMessageSender mobileMessageSender;
     private int countMobiles;
     private String randomNumber;
 
@@ -67,6 +65,9 @@ public class MobileVerifier extends AppCompatActivity
 
     private class MyListener implements View.OnClickListener
     {
+        private AttributeCounter mobileNumberCounter;
+        private  MobileMessageSender mobileMessageSender;
+
         @Override
         public void onClick(View v)
         {
@@ -113,7 +114,7 @@ public class MobileVerifier extends AppCompatActivity
             builder.setPositiveButton("Validate", new AlertDialogPosButListener());
             builder.setNegativeButton("Resend", new AlertDialogNegButListener());
             builder.setView(R.layout.mobile_otp_validation);
-            builder.setCancelable(false);
+            builder.setCancelable(true);
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -150,7 +151,6 @@ public class MobileVerifier extends AppCompatActivity
             {
                 Toast.makeText(MobileVerifier.this, "Invalid OTP!!!", Toast.LENGTH_SHORT).show();
                 buttonSendOTP.setText("Resend OTP");
-                return;
             }
 
             else
