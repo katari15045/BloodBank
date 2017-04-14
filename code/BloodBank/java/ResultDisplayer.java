@@ -1,5 +1,9 @@
 package com.example.root.home;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import java.sql.ResultSet;
@@ -9,67 +13,29 @@ import java.sql.SQLException;
  * Created by root on 10/4/17.
  */
 
-public class ResultDisplayer
+public class ResultDisplayer extends AppCompatActivity
 {
-    private String table;
-    private ResultSet resultSet;
+    private TextView textView;
+    private String result;
 
-    private boolean isPositive;
-    private String name;
-    private String mobile;
-    private String email;
-    private String country;
-    private String bloodGroup;
-    private StringBuilder result;
-
-    private BloodGroupGetter bloodGroupGetter;
-
-    public ResultDisplayer()
+    @Override
+    protected void onCreate(Bundle bundle)
     {
-        result = new StringBuilder();
-        bloodGroupGetter = new BloodGroupGetter();
+        super.onCreate(bundle);
+        setContentView(R.layout.result_displayer);
+
+        getDataFromActivity();
+        textView = (TextView) findViewById(R.id.textViewResults);
+        display();
     }
 
-    public void append(String inpTable, ResultSet inpResultSet)
+    private void getDataFromActivity()
     {
-        table = inpTable;
-        resultSet = inpResultSet;
-        parseResultSet();
+        Intent intent = getIntent();
+        result = intent.getStringExtra("labelResult");
     }
 
-    private void parseResultSet()
-    {
-        try
-        {
-            while( resultSet.next() )
-            {
-                isPositive = resultSet.getBoolean(2);
-                name = resultSet.getString(3);
-                mobile = resultSet.getString(4);
-                email = resultSet.getString(5);
-                country = resultSet.getString(6);
-                bloodGroup = bloodGroupGetter.get(table, isPositive);
-
-                appendToResult();
-            }
-        }
-
-        catch (SQLException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    private void appendToResult()
-    {
-        result.append("Name -> ").append(name).append("\n");
-        result.append("BloodGroup -> ").append(bloodGroup).append("\n");
-        result.append("Mobile -> ").append(mobile).append("\n");
-        result.append("Email -> ").append(email).append("\n");
-        result.append("Country -> ").append(country).append("\n").append("\n");
-    }
-
-    public void display(TextView textView)
+    public void display()
     {
         textView.setText( result.toString() );
     }

@@ -25,7 +25,9 @@
         <activity android:name=".Login"/>
         <activity android:name=".HomeDonor"/>
         <activity android:name=".HomeRecipient"/>
-        <activity android:name="Profile"/>
+        <activity android:name=".Profile"/>
+        <activity android:name=".DonorFinderActivity"/>
+        <activity android:name=".ResultDisplayer"/>
 
     </application>
 

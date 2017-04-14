@@ -1,9 +1,13 @@
 package com.example.root.home;
 
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.widget.TextView;
 
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 
@@ -16,31 +20,33 @@ public class DonorFinder
     private String bloodGroup;
     private boolean isPositive;
     private String country;
-    private TextView textView;
     private Context context;
 
     private TargetTableFinder targetTableFinder;
-    private ResultDisplayer resultDisplayer;
     private LinkedHashSet<String> targetTableSet;
     private DataBase dataBase;
 
     private StringBuilder stringBuilder;
     private String currentTable;
+    private StringBuilder result;
 
-    public void find(String inpBloodGroup, boolean inpIsPositive, String inpCountry, TextView inpTextView, Context inpContext)
+    public DonorFinder()
+    {
+        result = new StringBuilder();
+    }
+
+    void find(String inpBloodGroup, boolean inpIsPositive, String inpCountry, Context inpContext)
     {
         bloodGroup = inpBloodGroup;
         isPositive = inpIsPositive;
         country = inpCountry;
-        textView = inpTextView;
         context = inpContext;
         dataBase = new DataBase(context);
-        resultDisplayer = new ResultDisplayer();
         stringBuilder = new StringBuilder();
 
         findTargetTables();
         executeCommands();
-        resultDisplayer.display(textView);
+        startNewActivity();
     }
 
     private void findTargetTables()
@@ -48,6 +54,7 @@ public class DonorFinder
         targetTableFinder = new TargetTableFinder(context);
         targetTableFinder.find(bloodGroup);
         targetTableSet = targetTableFinder.getTables();
+        Log.d("SAKETH 1 -> ", " ->" + targetTableSet.toString() );
     }
 
     private void executeCommands()
@@ -62,18 +69,43 @@ public class DonorFinder
         }
     }
 
+    private void startNewActivity()
+    {
+        Intent intent = new Intent(context, ResultDisplayer.class);
+        intent.putExtra("labelResult", result.toString() );
+        context.startActivity(intent);
+    }
+
     private void prepareCommandAndExecute(String table)
     {
         stringBuilder.setLength(0);
 
         if(isPositive)
         {
-            stringBuilder.append("SELECT * FROM ").append(table).append(";");
+            if( country.equals("none") )
+            {
+                stringBuilder.append("SELECT * FROM ").append(table).append(";");
+            }
+
+            else
+            {
+                stringBuilder.append("SELECT * FROM ").append(table).append(" WHERE country='").append(country)
+                        .append("';");
+            }
         }
 
         else
         {
-            stringBuilder.append("SELECT * FROM ").append(table).append(" WHERE isPositive=false;");
+            if( country.equals("none") )
+            {
+                stringBuilder.append("SELECT * FROM ").append(table).append(" WHERE isPositive=false;");
+            }
+
+            else
+            {
+                stringBuilder.append("SELECT * FROM ").append(table)
+                        .append(" WHERE isPositive=false and country='").append(country).append("';");
+            }
         }
 
         dataBase.executeQuery( stringBuilder.toString(), false );
@@ -82,6 +114,42 @@ public class DonorFinder
     private void getDataFromDatabase()
     {
         ResultSet resultSet = dataBase.getResultSet();
-        resultDisplayer.append(currentTable, resultSet);
+        parseResultSet(currentTable, resultSet);
+    }
+
+    private void parseResultSet(String table, ResultSet resultSet)
+    {
+        BloodGroupGetter bloodGroupGetter = new BloodGroupGetter();
+        String tempName, tempMobile, tempEmail, tempCountry, tempBloodGroup;
+        boolean tempIsPositive;
+
+        try
+        {
+            while( resultSet.next() )
+            {
+                tempIsPositive = resultSet.getBoolean(2);
+                tempName = resultSet.getString(3);
+                tempMobile = resultSet.getString(4);
+                tempEmail = resultSet.getString(5);
+                tempCountry = resultSet.getString(6);
+                tempBloodGroup = bloodGroupGetter.get(table, tempIsPositive);
+
+                appendToResult(tempName, tempMobile, tempEmail, tempCountry, tempBloodGroup);
+            }
+        }
+
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    private void appendToResult(String tempName, String tempMobile, String tempEmail, String tempCountry, String tempBloodGroup)
+    {
+        result.append("Name -> ").append(tempName).append("\n");
+        result.append("BloodGroup -> ").append(tempBloodGroup).append("\n");
+        result.append("Mobile -> ").append(tempMobile).append("\n");
+        result.append("Email -> ").append(tempEmail).append("\n");
+        result.append("Country -> ").append(tempCountry).append("\n").append("\n");
     }
 }

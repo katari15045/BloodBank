@@ -21,7 +21,6 @@ import android.widget.TextView;
 
 public class HomeRecipient extends AppCompatActivity
 {
-    private Intent intent;
     private TextView textViewRecipient;
     private String startActivity;
 
@@ -68,7 +67,7 @@ public class HomeRecipient extends AppCompatActivity
 
     private void getDataFromActivity()
     {
-        intent = getIntent();
+        Intent intent = getIntent();
         startActivity = intent.getStringExtra("labelStartActivity");
         username = intent.getStringExtra("labelUsername");
         password = intent.getStringExtra("labelPassword");
@@ -116,6 +115,25 @@ public class HomeRecipient extends AppCompatActivity
     private void handleProfileItem()
     {
         Intent intent = new Intent( HomeRecipient.this, Profile.class );
+        fillIntent(intent);
+        startActivity(intent);
+    }
+
+    private void handleFindDonors()
+    {
+        Intent intent = new Intent(HomeRecipient.this, DonorFinderActivity.class);
+        fillIntent(intent);
+        startActivity(intent);
+    }
+
+    private void handleLogout()
+    {
+        Intent intent = new Intent(HomeRecipient.this, Startup.class);
+        startActivity(intent);
+    }
+
+    private void fillIntent(Intent intent)
+    {
         intent.putExtra("labelStartActivity", "HomeRecipient");
         intent.putExtra("labelName", name);
         intent.putExtra("labelUsername", username);
@@ -125,18 +143,5 @@ public class HomeRecipient extends AppCompatActivity
         intent.putExtra("labelCountry", country);
         intent.putExtra("labelBloodGroup", bloodGroup);
         intent.putExtra("labelIsDonor", isDonor);
-        startActivity(intent);
-    }
-
-    private void handleFindDonors()
-    {
-        donorFinder = new DonorFinder();
-        donorFinder.find(bloodGroup, isPositive, country, textViewRecipient, HomeRecipient.this);
-    }
-
-    private void handleLogout()
-    {
-        Intent intent = new Intent(HomeRecipient.this, Startup.class);
-        startActivity(intent);
     }
 }
