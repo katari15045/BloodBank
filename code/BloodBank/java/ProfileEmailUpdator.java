@@ -22,7 +22,6 @@ public class ProfileEmailUpdator extends Profile implements View.OnClickListener
     private Context context;
     private DataBase dataBase;
     private String commandUpdateEmail;
-    private String commandCountEmail;
     private String commandUpdateEmailInExtraTable;
     private EditText editTextNewEmail;
 
@@ -50,9 +49,8 @@ public class ProfileEmailUpdator extends Profile implements View.OnClickListener
 
     private class MyListener implements DialogInterface.OnClickListener
     {
+        private AttributeCounter attributeCounter;
         private String updatedEmail;
-        private ResultSet resultSet;
-        private ResultSetMetaData resultSetMetaData;
         private int countEmails;
 
         private String toastMessage;
@@ -61,23 +59,9 @@ public class ProfileEmailUpdator extends Profile implements View.OnClickListener
         public void onClick(DialogInterface dialog, int which)
         {
             dataBase = new DataBase(context);
+            attributeCounter = new AttributeCounter(context);
             initializeCommand();
-
-            try
-            {
-                dataBase.executeQuery( commandCountEmail, false );
-                resultSet = dataBase.getResultSet();
-                resultSetMetaData = resultSet.getMetaData();
-                resultSet.next();
-                countEmails = resultSet.getInt(1);
-
-            }
-
-            catch (SQLException e)
-            {
-                e.printStackTrace();
-            }
-
+            countEmails = attributeCounter.countEmails(updatedEmail);
             toastMessage = "Email already Exists!!!";
 
             if( countEmails == 0 )
@@ -97,10 +81,6 @@ public class ProfileEmailUpdator extends Profile implements View.OnClickListener
             editTextNewEmail = (EditText) myView.findViewById(R.id.editTextEditEmail);
             updatedEmail = editTextNewEmail.getText().toString();
 
-            stringBuilder.append("select count(*) from user where email='").append(updatedEmail).append("';");
-            commandCountEmail = stringBuilder.toString();
-
-            stringBuilder.setLength(0);
             stringBuilder.append("update user set email='").append(updatedEmail).append("' where username='")
                     .append(username).append("';");
             commandUpdateEmail = stringBuilder.toString();
