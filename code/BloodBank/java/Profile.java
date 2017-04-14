@@ -157,7 +157,13 @@ public class Profile extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu)
     {
         menu.add(0, 1, 1, "Home");
-        menu.add(0, 2, 2, "Logout");
+
+        if(!isDonor)
+        {
+            menu.add(0, 2, 2, "Find donors");
+        }
+
+        menu.add(0, 3, 3, "Logout");
 
         return true;
     }
@@ -169,13 +175,16 @@ public class Profile extends AppCompatActivity
         {
             case android.R.id.home:
                 this.finish();
-                return true;
+                break;
             case 1:
                 handleHome();
-                return  true;
+                break;
             case 2:
+                handleFindDonors();
+                break;
+            case 3:
                 handleLogout();
-                return true;
+                break;
         }
 
         return true;
@@ -210,6 +219,13 @@ public class Profile extends AppCompatActivity
         intent.putExtra("labelCountry", country);
         intent.putExtra("labelBloodGroup", bloodGroup);
         intent.putExtra("labelIsDonor", isDonor);
+    }
+
+    private void handleFindDonors()
+    {
+        Intent intent = new Intent(Profile.this, DonorFinderActivity.class);
+        fillIntent(intent);
+        startActivity(intent);
     }
 
     private void handleLogout()
