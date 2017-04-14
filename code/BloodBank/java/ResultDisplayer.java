@@ -37,7 +37,15 @@ public class ResultDisplayer extends AppCompatActivity
 
     public void display()
     {
-        textView.setText( result.toString() );
+        if( result.toString().isEmpty() )
+        {
+            textView.setText("Sorry, no donors available.");
+        }
+
+        else
+        {
+            textView.setText( result.toString() );
+        }
     }
 
 }

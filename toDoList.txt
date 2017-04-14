@@ -1,5 +1,4 @@
 -> when you rotate the screen you can't see the updated changes(like updated mobile in profile)
--> Add delete account option
 -> Validate mobile(10 digits) and email(@gmail.com)
 -> Either mobile or email is sufficient. Make user to fill either of them.
 -> When OTP is resent multiple times user should be allowed to enter one among the received OTPs(Any one of the sent OTPs is valid)
