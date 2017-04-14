@@ -21,6 +21,7 @@ public class DonorFinder
     private boolean isPositive;
     private String country;
     private Context context;
+    private Intent intent;
 
     private TargetTableFinder targetTableFinder;
     private LinkedHashSet<String> targetTableSet;
@@ -35,12 +36,13 @@ public class DonorFinder
         result = new StringBuilder();
     }
 
-    void find(String inpBloodGroup, boolean inpIsPositive, String inpCountry, Context inpContext)
+    void find(String inpBloodGroup, boolean inpIsPositive, String inpCountry, Context inpContext, Intent inpIntent)
     {
         bloodGroup = inpBloodGroup;
         isPositive = inpIsPositive;
         country = inpCountry;
         context = inpContext;
+        intent = inpIntent;
         dataBase = new DataBase(context);
         stringBuilder = new StringBuilder();
 
@@ -54,7 +56,6 @@ public class DonorFinder
         targetTableFinder = new TargetTableFinder(context);
         targetTableFinder.find(bloodGroup);
         targetTableSet = targetTableFinder.getTables();
-        Log.d("SAKETH 1 -> ", " ->" + targetTableSet.toString() );
     }
 
     private void executeCommands()
@@ -71,8 +72,7 @@ public class DonorFinder
 
     private void startNewActivity()
     {
-        Intent intent = new Intent(context, ResultDisplayer.class);
-        intent.putExtra("labelResult", result.toString() );
+        intent.putExtra("labelResult", result.toString());
         context.startActivity(intent);
     }
 

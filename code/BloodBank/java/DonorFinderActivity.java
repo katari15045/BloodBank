@@ -24,6 +24,7 @@ public class DonorFinderActivity extends AppCompatActivity
     private Button buttonFindDonorsInSameCountry;
 
     private String startActivity;
+    private Intent backupIntent;
 
     private String name;
     private String username;
@@ -83,6 +84,9 @@ public class DonorFinderActivity extends AppCompatActivity
         IsPositiveDecider isPositiveDecider = new IsPositiveDecider();
         isPositiveDecider.decide(bloodGroup);
         isPositive = isPositiveDecider.getDecision();
+
+        backupIntent = new Intent(DonorFinderActivity.this, ResultDisplayer.class);
+        fillIntent(backupIntent);
     }
 
     private void initializeViews()
@@ -99,7 +103,7 @@ public class DonorFinderActivity extends AppCompatActivity
             public void onClick(View v)
             {
                 DonorFinder donorFinder = new DonorFinder();
-                donorFinder.find(bloodGroup, isPositive, "none", DonorFinderActivity.this);
+                donorFinder.find(bloodGroup, isPositive, "none", DonorFinderActivity.this, backupIntent);
             }
         });
     }
@@ -112,7 +116,7 @@ public class DonorFinderActivity extends AppCompatActivity
             public void onClick(View v)
             {
                 DonorFinder donorFinder = new DonorFinder();
-                donorFinder.find(bloodGroup, isPositive, country , DonorFinderActivity.this);
+                donorFinder.find(bloodGroup, isPositive, country , DonorFinderActivity.this, backupIntent);
             }
         });
     }
