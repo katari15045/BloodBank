@@ -9,9 +9,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
+import java.util.Random;
 
 /**
  * Created by root on 3/4/17.
@@ -19,12 +17,15 @@ import java.sql.SQLException;
 
 public class ProfileEmailUpdator extends Profile implements View.OnClickListener
 {
-    private Context context;
     private DataBase dataBase;
     private String commandUpdateEmail;
     private String commandUpdateEmailInExtraTable;
-    private EditText editTextNewEmail;
+    private String randomNumber;
+    private String toastMessage;
+    private String updatedEmail;
 
+    private Context context;
+    private AlertDialog alertDialogVerCode;
     private View myView;
 
     public ProfileEmailUpdator(Context inpContext)
@@ -47,13 +48,45 @@ public class ProfileEmailUpdator extends Profile implements View.OnClickListener
         alertDialog.show();
     }
 
+    private void sendEmail()
+    {
+        generateRandomNumber();
+        EmailSender emailSender = new EmailSender(context);
+        emailSender.send(updatedEmail, randomNumber);
+    }
+
+    private void generateRandomNumber()
+    {
+        int max = 1000000;
+        int min = 0;
+        int number;
+        Random random = new Random();
+
+        number = random.nextInt( (max+1)-min ) + min;
+        randomNumber = Integer.toString(number);
+    }
+
+    private void launchDialog()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setPositiveButton("Validate", new AlertDialogPosButListener());
+        builder.setNegativeButton("Resend", new AlertDialogNegButListener());
+        builder.setView(R.layout.email_otp_validation);
+        builder.setCancelable(true);
+        alertDialogVerCode = builder.create();
+        alertDialogVerCode.show();
+    }
+
+    private void displayToast()
+    {
+        Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show();
+    }
+
     private class MyListener implements DialogInterface.OnClickListener
     {
         private AttributeCounter attributeCounter;
-        private String updatedEmail;
+        private EditText editTextNewEmail;
         private int countEmails;
-
-        private String toastMessage;
 
         @Override
         public void onClick(DialogInterface dialog, int which)
@@ -66,13 +99,14 @@ public class ProfileEmailUpdator extends Profile implements View.OnClickListener
 
             if( countEmails == 0 )
             {
-                dataBase.executeQuery( commandUpdateEmail, true );
-                dataBase.executeQuery( commandUpdateEmailInExtraTable, true );
-                email = updatedEmail;
-                toastMessage = "Email Updated!!!";
+                sendEmail();
+                launchDialog();
             }
 
-            Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show();
+            else
+            {
+                displayToast();
+            }
         }
 
         private void initializeCommand()
@@ -94,8 +128,49 @@ public class ProfileEmailUpdator extends Profile implements View.OnClickListener
                     .append(username).append("';");
             commandUpdateEmailInExtraTable = stringBuilder.toString();
         }
-
     }
 
+    private class AlertDialogPosButListener implements DialogInterface.OnClickListener
+    {
+        private EditText editTextUserCode;
+        private String userCode;
 
+        @Override
+        public void onClick(DialogInterface dialog, int which)
+        {
+            editTextUserCode = (EditText) alertDialogVerCode.findViewById(R.id.editTextVerificationCode);
+            userCode = editTextUserCode.getText().toString();
+
+            if( !randomNumber.equals(userCode) )
+            {
+                toastMessage = "Invalid Code!!!";
+                displayToast();
+            }
+
+            else
+            {
+                updateEmail();
+                toastMessage = "Email Updated!!!";
+                displayToast();
+            }
+        }
+
+        private void updateEmail()
+        {
+            dataBase.executeQuery( commandUpdateEmail, true );
+            dataBase.executeQuery( commandUpdateEmailInExtraTable, true );
+            email = updatedEmail;
+            toastMessage = "Email Updated!!!";
+        }
+    }
+
+    private class AlertDialogNegButListener implements DialogInterface.OnClickListener
+    {
+        @Override
+        public void onClick(DialogInterface dialog, int which)
+        {
+            sendEmail();
+            launchDialog();
+        }
+    }
 }

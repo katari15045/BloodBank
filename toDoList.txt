@@ -1,4 +1,3 @@
--> while updating mobile or email in profile, validate new mobile or email.
 -> when you rotate the screen you can't see the updated changes(like updated mobile in profile)
 -> Add signout in Overflow menu
 -> Add delete account option
