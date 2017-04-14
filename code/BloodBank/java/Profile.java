@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -41,6 +42,7 @@ public class Profile extends AppCompatActivity
     protected static ImageView imageEditBloodGroup;
     protected static ImageView imageViewIsDonor;
     protected static ImageView imageEditIsDonor;
+    protected static Button buttonDeleteAccount;
 
     protected static TextView textViewProfileItemView;
     private String startActivity;
@@ -54,7 +56,6 @@ public class Profile extends AppCompatActivity
     protected static String bloodGroup;
     protected static boolean isDonor;
 
-    private ProfileViewHandler profileViewHandler;
     protected static TableDecider tableDecider;
     protected static String tableToUpdate;
 
@@ -70,6 +71,7 @@ public class Profile extends AppCompatActivity
         customizeStatusBar();
         handleImageViews();
         handleImageEdits();
+        buttonDeleteAccount.setOnClickListener( new ProfileAccountDeleter(Profile.this) );
     }
 
     private void getDataFromParentActivity()
@@ -105,7 +107,7 @@ public class Profile extends AppCompatActivity
         imageEditBloodGroup = (ImageView) findViewById(R.id.imageBloodGroupEdit);
         imageViewIsDonor = (ImageView) findViewById(R.id.imageIsDonorView);
         imageEditIsDonor = (ImageView) findViewById(R.id.imageIsDonorEdit);
-
+        buttonDeleteAccount = (Button) findViewById(R.id.buttonDeleteAccount);
     }
 
     private void customizeActionBar()
@@ -128,7 +130,7 @@ public class Profile extends AppCompatActivity
 
     private void handleImageViews()
     {
-        profileViewHandler = new ProfileViewHandler( Profile.this );
+        ProfileViewHandler profileViewHandler = new ProfileViewHandler( Profile.this );
 
         imageViewName.setOnClickListener( profileViewHandler.new NameViewHandler() );
         imageViewUsername.setOnClickListener( profileViewHandler.new UsernameViewHandler() );

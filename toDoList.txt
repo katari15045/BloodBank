@@ -1,5 +1,4 @@
 -> when you rotate the screen you can't see the updated changes(like updated mobile in profile)
--> Add signout in Overflow menu
 -> Add delete account option
 -> Validate mobile(10 digits) and email(@gmail.com)
 -> Either mobile or email is sufficient. Make user to fill either of them.
