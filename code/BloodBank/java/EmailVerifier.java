@@ -3,9 +3,16 @@ package com.example.root.home;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -43,9 +50,29 @@ public class EmailVerifier extends AppCompatActivity
         super.onCreate(state);
         setContentView(R.layout.email_verifier);
 
+        customizeActionBar();
+        customizeStatusBar();
         receiveIntent();
         initializeViews();
         buttonVerifyEmail.setOnClickListener( new VerifyEmailListener() );
+    }
+
+    private void customizeActionBar()
+    {
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setBackgroundDrawable( new ColorDrawable(ContextCompat.getColor(EmailVerifier.this, R.color.blood)) );
+        actionBar.setTitle("Verify Email");
+    }
+
+    private void customizeStatusBar()
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor( ContextCompat.getColor(EmailVerifier.this, R.color.blood) );
+        }
     }
 
     private void receiveIntent()
@@ -64,6 +91,19 @@ public class EmailVerifier extends AppCompatActivity
     {
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
         buttonVerifyEmail = (Button) findViewById(R.id.buttonVerifyEmail);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch( item.getItemId() )
+        {
+            case android.R.id.home :
+                this.finish();
+                break;
+        }
+
+        return true;
     }
 
     private class VerifyEmailListener implements View.OnClickListener
@@ -187,6 +227,7 @@ public class EmailVerifier extends AppCompatActivity
                 intent = new Intent(EmailVerifier.this, HomeRecipient.class);
             }
 
+            intent.putExtra("labelStartActivity", "Signup");
             intent.putExtra("labelUsername", username);
             intent.putExtra("labelPassword", password);
             intent.putExtra("labelName", name);

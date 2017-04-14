@@ -1,12 +1,18 @@
 package com.example.root.home;
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 /**
@@ -17,6 +23,7 @@ public class HomeRecipient extends AppCompatActivity
 {
     private Intent intent;
     private TextView textViewRecipient;
+    private String startActivity;
 
     private String name;
     private String username;
@@ -36,14 +43,33 @@ public class HomeRecipient extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipient_home);
 
+        customizeActionBar();
+        customizeStatusBar();
         textViewRecipient = (TextView) findViewById(R.id.textViewRecipient);
         getDataFromActivity();
+    }
 
+    private void customizeActionBar()
+    {
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setBackgroundDrawable( new ColorDrawable(ContextCompat.getColor(HomeRecipient.this, R.color.blood)) );
+        actionBar.setTitle("Home");
+    }
+
+    private void customizeStatusBar()
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor( ContextCompat.getColor(HomeRecipient.this, R.color.blood) );
+        }
     }
 
     private void getDataFromActivity()
     {
         intent = getIntent();
+        startActivity = intent.getStringExtra("labelStartActivity");
         username = intent.getStringExtra("labelUsername");
         password = intent.getStringExtra("labelPassword");
         name = intent.getStringExtra("labelName");
@@ -61,8 +87,10 @@ public class HomeRecipient extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_recipient_overflow, menu);
+        menu.add(0, 1, 1, "Profile");
+        menu.add(0, 2, 2, "Find Donors");
+        menu.add(0, 3, 3, "Logout");
+
         return true;
     }
 
@@ -71,11 +99,14 @@ public class HomeRecipient extends AppCompatActivity
     {
         switch ( item.getItemId() )
         {
-            case R.id.itemProfile:
+            case 1:
                 handleProfileItem();
                 break;
-            case R.id.itemFindDonors:
+            case 2:
                 handleFindDonors();
+                break;
+            case 3:
+                handleLogout();
                 break;
         }
 
@@ -85,6 +116,7 @@ public class HomeRecipient extends AppCompatActivity
     private void handleProfileItem()
     {
         Intent intent = new Intent( HomeRecipient.this, Profile.class );
+        intent.putExtra("labelStartActivity", "HomeRecipient");
         intent.putExtra("labelName", name);
         intent.putExtra("labelUsername", username);
         intent.putExtra("labelPassword", password);
@@ -100,5 +132,11 @@ public class HomeRecipient extends AppCompatActivity
     {
         donorFinder = new DonorFinder();
         donorFinder.find(bloodGroup, isPositive, country, textViewRecipient, HomeRecipient.this);
+    }
+
+    private void handleLogout()
+    {
+        Intent intent = new Intent(HomeRecipient.this, Startup.class);
+        startActivity(intent);
     }
 }

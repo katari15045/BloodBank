@@ -5,12 +5,18 @@ package com.example.root.home;
  */
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -40,6 +46,8 @@ public class Signup extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
+        customizeActionBar();
+        customizeStatusBar();
         initializeViews();
 
         editTextBloodgroup.setOnClickListener(new View.OnClickListener()
@@ -55,6 +63,24 @@ public class Signup extends AppCompatActivity
         buttonSignup.setOnClickListener( new MyListener() );
     }
 
+    private void customizeActionBar()
+    {
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setBackgroundDrawable( new ColorDrawable(ContextCompat.getColor(Signup.this, R.color.blood)) );
+        actionBar.setTitle("Signup");
+    }
+
+    private void customizeStatusBar()
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor( ContextCompat.getColor(Signup.this, R.color.blood) );
+        }
+    }
+
     private void initializeViews()
     {
         editTextName = (EditText) findViewById(R.id.editTextName);
@@ -66,6 +92,19 @@ public class Signup extends AppCompatActivity
         radioGroup = (RadioGroup) findViewById(R.id.radioGroupDonorAcceptor);
         buttonSignup = (Button) findViewById(R.id.buttonSignUp);
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch( item.getItemId() )
+        {
+            case android.R.id.home :
+                this.finish();
+                break;
+        }
+
+        return true;
     }
 
     @Override
@@ -190,5 +229,7 @@ public class Signup extends AppCompatActivity
             intent.putExtra("labelIsDonor", isDonor);
             startActivity(intent);
         }
+
+
     }
 }

@@ -148,6 +148,7 @@ public class LoginValidator
 
         private void fillIntent()
         {
+            intent.putExtra("labelStartActivity", "Login");
             intent.putExtra("labelUsername", username);
             intent.putExtra("labelPassword", password);
             intent.putExtra("labelName", name);

@@ -3,9 +3,15 @@
 package com.example.root.home;
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 
 public class Startup extends AppCompatActivity
@@ -19,6 +25,8 @@ public class Startup extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_startup);
 
+        customizeActionBar();
+        customizeStatusBar();
         initializeViews();
 
         buttonSignup.setOnClickListener(new View.OnClickListener()
@@ -44,6 +52,22 @@ public class Startup extends AppCompatActivity
                 startActivity(intentSignin);
             }
         });
+    }
+
+    private void customizeActionBar()
+    {
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
+    }
+
+    private void customizeStatusBar()
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor( ContextCompat.getColor(Startup.this, R.color.blood) );
+        }
     }
 
     private void initializeViews()

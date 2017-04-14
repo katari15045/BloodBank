@@ -3,10 +3,17 @@ package com.example.root.home;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -40,9 +47,29 @@ public class MobileVerifier extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register_mobile);
 
+        customizeActionBar();
+        customizeStatusBar();
         receiveIntent();
         initializeViews();
         buttonSendOTP.setOnClickListener( new MyListener() );
+    }
+
+    private void customizeActionBar()
+    {
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setBackgroundDrawable( new ColorDrawable(ContextCompat.getColor(MobileVerifier.this, R.color.blood)) );
+        actionBar.setTitle("Verify Mobile");
+    }
+
+    private void customizeStatusBar()
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor( ContextCompat.getColor(MobileVerifier.this, R.color.blood) );
+        }
     }
 
     private void receiveIntent()
@@ -61,6 +88,19 @@ public class MobileVerifier extends AppCompatActivity
     {
         editTextMobile = (EditText) findViewById(R.id.editTextMobile);
         buttonSendOTP = (Button) findViewById(R.id.buttonSendOTP);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch( item.getItemId() )
+        {
+            case android.R.id.home :
+                this.finish();
+                break;
+        }
+
+        return true;
     }
 
     private class MyListener implements View.OnClickListener
