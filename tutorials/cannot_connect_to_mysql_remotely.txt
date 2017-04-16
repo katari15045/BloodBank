@@ -1,0 +1,14 @@
+If you can't able to connect to your MySQL database remotely then try the following
+
+Bind Address of MySQL server
+-----------------------------
+-> By default(for security reasons) the bind address is set to 127.0.0.1 which means your MySQL server can only listen to your local machine i.e youe server itself
+-> In order to make it listen to all clients change bind address to 0.0.0.0 which means listen to all IPV4 address.
+-> Where do I need to change?
+-> /etc/mysql/my.cnf (or) /etc/mysql/mysql.conf.d/mysqld.cnf
+
+Just in case, make sure the client has enough privileges
+---------------------------------------------------------
+-> create user 'test_user'@'%' identified by 'Test_user9977';
+-> grant all privileges on test_db.* to 'test_user'@'%';
+-> show grants for 'test_user'@'%';
