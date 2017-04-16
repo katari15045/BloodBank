@@ -1,3 +1,5 @@
+
+
 -> Download .tar.gz file from https://mvnrepository.com/artifact/mysql/mysql-connector-java/5.1.29
 (Latest versions not working - issue with old package tools on Android SDK)
 -> copy .jar folder to AndroidStudioProjects/<appName>/app/libs
@@ -28,3 +30,21 @@ If you have any issue with plugin then remove and re-create the user
 Make sure that user has enough previliges
 
 -------------
+On Windows
+--------------------------
+
+-> Download MySQL JDBC connector and extract it
+-> Follow the 1st answer in http://stackoverflow.com/questions/24784871/how-to-mysql-jdbc-driver-to-android-studio
+-> Also copy and paste bin.jar file in app/libs folder
+-> Open build.gradle:module and add
+defaultConfig {
+  ...
+    jackOptions {
+      enabled true
+    }
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
